@@ -6,161 +6,94 @@
 <title>Escola JB - Adicionar Palavra</title>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-  body {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px 15px;
-  }
-  .card {
-    background: white;
-    width: 100%;
-    max-width: 420px;
-    border-radius: 24px;
-    padding: 28px 22px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-    margin-top: 20px;
-    text-align: center;
-  }
-  .emoji { font-size: 55px; margin-bottom: 5px; }
-  h1 { font-size: 22px; color: #333; margin-bottom: 5px; }
+  body { min-height: 100vh; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; justify-content: center; padding: 20px 15px; }
+  .card { background: white; width: 100%; max-width: 420px; border-radius: 24px; padding: 28px 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); margin-top: 20px; text-align: center; }
+  .emoji { font-size: 55px; }
+  h1 { font-size: 22px; color: #333; }
   p.sub { color: #888; font-size: 14px; margin-bottom: 20px; }
   label { display: block; text-align: left; font-weight: 700; font-size: 14px; color: #555; margin-bottom: 8px; margin-top: 12px; }
-  input[type="text"], input[type="password"] {
-    width: 100%;
-    padding: 15px;
-    border: 2px solid #eee;
-    border-radius: 14px;
-    font-size: 18px;
-    outline: none;
-    margin-bottom: 5px;
-  }
+  input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 14px; font-size: 16px; outline: none; }
   input:focus { border-color: #667eea; }
-  .btn-add {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 15px;
-    box-shadow: 0 8px 20px rgba(102,126,234,0.4);
-  }
-  .btn-add:active { transform: scale(0.98); }
-  .btn-download {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 14px;
-    background: #22c55e;
-    color: white;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 12px;
-    display: none;
-  }
-  #resultado {
-    margin-top: 20px;
-    background: #f8f9ff;
-    border: 1px dashed #c7d2fe;
-    border-radius: 14px;
-    padding: 15px;
-    text-align: left;
-    font-size: 14px;
-    white-space: pre-wrap;
-    word-break: break-word;
-    display: none;
-    color: #333;
-  }
-  .footer { margin-top: 18px; font-size: 12px; color: #aaa; }
-  .aviso { font-size: 12px; color: #999; text-align: left; margin-top: 4px; }
+  .btn-add { width: 100%; padding: 16px; border: none; border-radius: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 15px; }
+  #resultado { margin-top: 20px; background: #f8f9ff; border: 1px dashed #c7d2fe; border-radius: 14px; padding: 15px; text-align: left; font-size: 14px; white-space: pre-wrap; display: none; }
 </style>
 </head>
 <body>
-
 <div class="card">
   <div class="emoji">🍉📝</div>
   <h1>Adicionar Palavra</h1>
-  <p class="sub">Escola JB • arquivo arq.txt</p>
+  <p class="sub">Salva direto no GitHub</p>
 
-  <!-- CAMPO 1: SENHA -->
-  <label for="senha">🔒 Senha de acesso:</label>
-  <input type="password" id="senha" placeholder="Digite a senha">
-  <div class="aviso">Só quem tem a senha consegue adicionar.</div>
+  <label>🔒 Senha:</label>
+  <input type="password" id="senha" placeholder="melancia123">
 
-  <!-- CAMPO 2: PALAVRA - ESSE QUE ESTAVA FALTANDO -->
-  <label for="palavra">✏️ Digite uma palavra:</label>
-  <input type="text" id="palavra" placeholder="Ex: melancia" autocomplete="off">
+  <label>🔑 Token do GitHub (não fica salvo):</label>
+  <input type="password" id="token" placeholder="Cole o github_pat_... aqui">
 
-  <button class="btn-add" onclick="adicionar()">✨ Adicionar no arq.txt</button>
+  <label>✏️ Digite uma palavra:</label>
+  <input type="text" id="palavra" placeholder="Ex: melancia">
 
+  <button class="btn-add" onclick="adicionar()">✨ Salvar no arq.txt</button>
   <div id="resultado"></div>
-  <button class="btn-download" id="btnBaixar" onclick="baixar()">⬇️ Baixar novo arq.txt</button>
-
-  <div class="footer">Feito para o projeto escolajb</div>
 </div>
 
 <script>
-  // TROCA A SENHA AQUI SE QUISER
   const SENHA_CERTA = "melancia123";
-  const NOME_ARQUIVO = "arq.txt";
-  let novoTexto = "";
-
-  // Se abrir com ?senha=... no link, já preenche sozinho
-  const params = new URLSearchParams(window.location.search);
-  if (params.get("senha")) {
-    document.getElementById("senha").value = params.get("senha");
-  }
+  const USUARIO = "joao55jbn";
+  const REPO = "escolajb";
+  const ARQUIVO = "arq.txt";
 
   async function adicionar() {
-    let senhaDigitada = document.getElementById("senha").value;
+    let senha = document.getElementById("senha").value;
+    let token = document.getElementById("token").value.trim();
     let palavra = document.getElementById("palavra").value.trim();
+    let resDiv = document.getElementById("resultado");
+    resDiv.style.display = "block";
 
-    if (senhaDigitada !== SENHA_CERTA) {
-      alert("Senha errada! Você não tem permissão.");
-      return;
-    }
-    if (!palavra) { alert("Digite uma palavra primeiro!"); return; }
+    if (senha !== SENHA_CERTA) { alert("Senha errada!"); return; }
+    if (!token) { alert("Cole o token do GitHub!"); return; }
+    if (!palavra) { alert("Digite uma palavra!"); return; }
 
-    document.getElementById("resultado").style.display = "block";
-    document.getElementById("resultado").innerText = "Carregando...";
+    resDiv.innerText = "Salvando...";
 
     try {
-      let resposta = await fetch(NOME_ARQUIVO);
-      let textoAtual = await resposta.text();
-
-      if (textoAtual.length > 0 && !textoAtual.endsWith("\n")) {
-        textoAtual += "\n";
+      // 1. Pega o arquivo atual para descobrir o SHA
+      let get = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${ARQUIVO}`, {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      let dados = await get.json();
+      let conteudoAtual = "";
+      let sha = dados.sha;
+      if (get.ok) {
+        // Decodifica base64
+        conteudoAtual = decodeURIComponent(escape(atob(dados.content.replace(/\n/g, ""))));
       }
 
-      novoTexto = textoAtual + palavra;
+      if (conteudoAtual.length > 0 && !conteudoAtual.endsWith("\n")) conteudoAtual += "\n";
+      let novoConteudo = conteudoAtual + palavra;
 
-      document.getElementById("resultado").innerText = "✅ Pronto! Novo conteúdo:\n\n" + novoTexto;
-      document.getElementById("btnBaixar").style.display = "block";
-      document.getElementById("palavra").value = "";
-    } catch (e) {
-      document.getElementById("resultado").innerText = "Erro ao ler o arquivo. Veja se o arq.txt existe no repositório.";
+      // 2. Salva de volta no GitHub
+      let put = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${ARQUIVO}`, {
+        method: "PUT",
+        headers: { "Authorization": "Bearer " + token, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: "Adicionou: " + palavra,
+          content: btoa(unescape(encodeURIComponent(novoConteudo))),
+          sha: sha
+        })
+      });
+
+      if (put.ok) {
+        resDiv.innerText = "✅ Salvo com sucesso!\n\nPalavra '" + palavra + "' adicionada no arq.txt";
+        document.getElementById("palavra").value = "";
+      } else {
+        let erro = await put.json();
+        resDiv.innerText = "Erro: " + JSON.stringify(erro);
+      }
+    } catch(e) {
+      resDiv.innerText = "Erro: " + e;
     }
   }
-
-  function baixar() {
-    let blob = new Blob([novoTexto], {type: "text/plain"});
-    let link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = NOME_ARQUIVO;
-    link.click();
-  }
-
-  document.getElementById("palavra").addEventListener("keypress", function(e){
-    if(e.key === "Enter") adicionar();
-  });
 </script>
-
 </body>
 </html>
