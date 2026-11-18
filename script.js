@@ -1,0 +1,1 @@
+a1.style.color = 'blue';
