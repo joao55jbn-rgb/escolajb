@@ -1,58 +1,165 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<title>Salvar Artigo - jb7</title>
-<link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
-<script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escola JB - Adicionar Palavra</title>
 <style>
-  body { font-family: sans-serif; padding: 20px; text-align: center; background: #f2f2f2; }
-  input, textarea { width: 90%; padding: 12px; font-size: 16px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; }
-  textarea { height: 200px; }
-  button { padding: 14px 20px; font-size: 18px; background: black; color: white; border: none; border-radius: 8px; margin-top: 15px; width: 90%; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px 15px;
+  }
+  .card {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 24px;
+    padding: 28px 22px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    margin-top: 20px;
+    text-align: center;
+  }
+  .emoji { font-size: 55px; margin-bottom: 5px; }
+  h1 { font-size: 22px; color: #333; margin-bottom: 5px; }
+  p.sub { color: #888; font-size: 14px; margin-bottom: 20px; }
+  label { display: block; text-align: left; font-weight: 700; font-size: 14px; color: #555; margin-bottom: 8px; margin-top: 12px; }
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #eee;
+    border-radius: 14px;
+    font-size: 18px;
+    outline: none;
+    margin-bottom: 5px;
+  }
+  input:focus { border-color: #667eea; }
+  .btn-add {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 15px;
+    box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+  }
+  .btn-add:active { transform: scale(0.98); }
+  .btn-download {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: #22c55e;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 12px;
+    display: none;
+  }
+  #resultado {
+    margin-top: 20px;
+    background: #f8f9ff;
+    border: 1px dashed #c7d2fe;
+    border-radius: 14px;
+    padding: 15px;
+    text-align: left;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    display: none;
+    color: #333;
+  }
+  .footer { margin-top: 18px; font-size: 12px; color: #aaa; }
+  .aviso { font-size: 12px; color: #999; text-align: left; margin-top: 4px; }
 </style>
 </head>
 <body>
 
-<h1>Escrever Artigo</h1>
+<div class="card">
+  <div class="emoji">🍉📝</div>
+  <h1>Adicionar Palavra</h1>
+  <p class="sub">Escola JB • arquivo arq.txt</p>
 
-<input id="titulo" type="text" placeholder="Título do artigo">
-<br>
-<textarea id="texto" placeholder="Digite seu artigo aqui..."></textarea>
-<br>
-<button py-click="salvar">SALVAR TXT NO CELULAR</button>
-<p id="aviso"></p>
+  <!-- CAMPO 1: SENHA -->
+  <label for="senha">🔒 Senha de acesso:</label>
+  <input type="password" id="senha" placeholder="Digite a senha">
+  <div class="aviso">Só quem tem a senha consegue adicionar.</div>
 
-<script type="py">
-from pyscript import document
-from js import Blob, URL, document as js_doc
+  <!-- CAMPO 2: PALAVRA - ESSE QUE ESTAVA FALTANDO -->
+  <label for="palavra">✏️ Digite uma palavra:</label>
+  <input type="text" id="palavra" placeholder="Ex: melancia" autocomplete="off">
 
-def salvar(event):
-    titulo = document.querySelector("#titulo").value.strip()
-    texto = document.querySelector("#texto").value.strip()
+  <button class="btn-add" onclick="adicionar()">✨ Adicionar no arq.txt</button>
 
-    if texto == "":
-        document.querySelector("#aviso").innerText = "Digite alguma coisa primeiro!"
-        return
+  <div id="resultado"></div>
+  <button class="btn-download" id="btnBaixar" onclick="baixar()">⬇️ Baixar novo arq.txt</button>
 
-    if titulo == "":
-        titulo = "meu_artigo"
+  <div class="footer">Feito para o projeto escolajb</div>
+</div>
 
-    # Junta título + texto dentro do arquivo
-    conteudo_final = titulo + "\n\n" + texto
+<script>
+  // TROCA A SENHA AQUI SE QUISER
+  const SENHA_CERTA = "melancia123";
+  const NOME_ARQUIVO = "arq.txt";
+  let novoTexto = "";
 
-    # Cria o arquivo TXT
-    blob = Blob.new([conteudo_final], {"type": "text/plain"})
-    url = URL.createObjectURL(blob)
+  // Se abrir com ?senha=... no link, já preenche sozinho
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("senha")) {
+    document.getElementById("senha").value = params.get("senha");
+  }
 
-    # Faz o celular baixar
-    link = js_doc.createElement("a")
-    link.href = url
-    link.download = titulo + ".txt"
-    link.click()
+  async function adicionar() {
+    let senhaDigitada = document.getElementById("senha").value;
+    let palavra = document.getElementById("palavra").value.trim();
 
-    document.querySelector("#aviso").innerText = "Salvo! Olha na pasta Downloads"
-    document.querySelector("#texto").value = ""
+    if (senhaDigitada !== SENHA_CERTA) {
+      alert("Senha errada! Você não tem permissão.");
+      return;
+    }
+    if (!palavra) { alert("Digite uma palavra primeiro!"); return; }
+
+    document.getElementById("resultado").style.display = "block";
+    document.getElementById("resultado").innerText = "Carregando...";
+
+    try {
+      let resposta = await fetch(NOME_ARQUIVO);
+      let textoAtual = await resposta.text();
+
+      if (textoAtual.length > 0 && !textoAtual.endsWith("\n")) {
+        textoAtual += "\n";
+      }
+
+      novoTexto = textoAtual + palavra;
+
+      document.getElementById("resultado").innerText = "✅ Pronto! Novo conteúdo:\n\n" + novoTexto;
+      document.getElementById("btnBaixar").style.display = "block";
+      document.getElementById("palavra").value = "";
+    } catch (e) {
+      document.getElementById("resultado").innerText = "Erro ao ler o arquivo. Veja se o arq.txt existe no repositório.";
+    }
+  }
+
+  function baixar() {
+    let blob = new Blob([novoTexto], {type: "text/plain"});
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = NOME_ARQUIVO;
+    link.click();
+  }
+
+  document.getElementById("palavra").addEventListener("keypress", function(e){
+    if(e.key === "Enter") adicionar();
+  });
 </script>
 
 </body>
