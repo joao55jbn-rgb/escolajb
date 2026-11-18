@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Salvar Artigo - jb7</title>
+<link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+<script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+<style>
+  body { font-family: sans-serif; padding: 20px; text-align: center; background: #f2f2f2; }
+  input, textarea { width: 90%; padding: 12px; font-size: 16px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; }
+  textarea { height: 200px; }
+  button { padding: 14px 20px; font-size: 18px; background: black; color: white; border: none; border-radius: 8px; margin-top: 15px; width: 90%; }
+</style>
+</head>
+<body>
+
+<h1>Escrever Artigo</h1>
+
+<input id="titulo" type="text" placeholder="Título do artigo">
+<br>
+<textarea id="texto" placeholder="Digite seu artigo aqui..."></textarea>
+<br>
+<button py-click="salvar">SALVAR TXT NO CELULAR</button>
+<p id="aviso"></p>
+
+<script type="py">
+from pyscript import document
+from js import Blob, URL, document as js_doc
+
+def salvar(event):
+    titulo = document.querySelector("#titulo").value.strip()
+    texto = document.querySelector("#texto").value.strip()
+
+    if texto == "":
+        document.querySelector("#aviso").innerText = "Digite alguma coisa primeiro!"
+        return
+
+    if titulo == "":
+        titulo = "meu_artigo"
+
+    # Junta título + texto dentro do arquivo
+    conteudo_final = titulo + "\n\n" + texto
+
+    # Cria o arquivo TXT
+    blob = Blob.new([conteudo_final], {"type": "text/plain"})
+    url = URL.createObjectURL(blob)
+
+    # Faz o celular baixar
+    link = js_doc.createElement("a")
+    link.href = url
+    link.download = titulo + ".txt"
+    link.click()
+
+    document.querySelector("#aviso").innerText = "Salvo! Olha na pasta Downloads"
+    document.querySelector("#texto").value = ""
+</script>
+
+</body>
+</html>
