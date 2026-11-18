@@ -1,99 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Escola JB - Adicionar Palavra</title>
-<style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-  body { min-height: 100vh; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; justify-content: center; padding: 20px 15px; }
-  .card { background: white; width: 100%; max-width: 420px; border-radius: 24px; padding: 28px 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); margin-top: 20px; text-align: center; }
-  .emoji { font-size: 55px; }
-  h1 { font-size: 22px; color: #333; }
-  p.sub { color: #888; font-size: 14px; margin-bottom: 20px; }
-  label { display: block; text-align: left; font-weight: 700; font-size: 14px; color: #555; margin-bottom: 8px; margin-top: 12px; }
-  input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 14px; font-size: 16px; outline: none; }
-  input:focus { border-color: #667eea; }
-  .btn-add { width: 100%; padding: 16px; border: none; border-radius: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 15px; }
-  #resultado { margin-top: 20px; background: #f8f9ff; border: 1px dashed #c7d2fe; border-radius: 14px; padding: 15px; text-align: left; font-size: 14px; white-space: pre-wrap; display: none; }
-</style>
+  <meta charset="UTF-8">
+  <title>Exemplo CSS</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="card">
-  <div class="emoji">🍉📝</div>
-  <h1>Adicionar Palavra</h1>
-  <p class="sub">Salva direto no GitHub</p>
-<a href="Matemática7ºano101126.html">Ir para a página Sobre</a>
-  <label>🔒 Senha:</label>
-  <input type="password" id="senha" placeholder="melancia123">
-
-  <label>🔑 Token do GitHub (não fica salvo):</label>
-  <input type="password" id="token" placeholder="Cole o github_pat_... aqui">
-
-  <label>✏️ Digite uma palavra:</label>
-  <input type="text" id="palavra" placeholder="Ex: melancia">
-
-  <button class="btn-add" onclick="adicionar()">✨ Salvar no arq.txt</button>
-  <div id="resultado"></div>
-</div>
-
-<script>
-  const SENHA_CERTA = "melancia123";
-  const USUARIO = "joao55jbn-rgb";
-  const REPO = "escolajb";
-  const ARQUIVO = "arq.txt";
-
-  async function adicionar() {
-    let senha = document.getElementById("senha").value;
-    let token = document.getElementById("token").value.trim();
-    let palavra = document.getElementById("palavra").value.trim();
-    let resDiv = document.getElementById("resultado");
-    resDiv.style.display = "block";
-
-    if (senha !== SENHA_CERTA) { alert("Senha errada!"); return; }
-    if (!token) { alert("Cole o token do GitHub!"); return; }
-    if (!palavra) { alert("Digite uma palavra!"); return; }
-
-    resDiv.innerText = "Salvando...";
-
-    try {
-      // 1. Pega o arquivo atual para descobrir o SHA
-      let get = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${ARQUIVO}`, {
-        headers: { "Authorization": "Bearer " + token }
-      });
-      let dados = await get.json();
-      let conteudoAtual = "";
-      let sha = dados.sha;
-      if (get.ok) {
-        // Decodifica base64
-        conteudoAtual = decodeURIComponent(escape(atob(dados.content.replace(/\n/g, ""))));
-      }
-
-      if (conteudoAtual.length > 0 && !conteudoAtual.endsWith("\n")) conteudoAtual += "\n";
-      let novoConteudo = conteudoAtual + palavra;
-
-      // 2. Salva de volta no GitHub
-      let put = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${ARQUIVO}`, {
-        method: "PUT",
-        headers: { "Authorization": "Bearer " + token, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: "Adicionou: " + palavra,
-          content: btoa(unescape(encodeURIComponent(novoConteudo))),
-          sha: sha
-        })
-      });
-
-      if (put.ok) {
-        resDiv.innerText = "✅ Salvo com sucesso!\n\nPalavra '" + palavra + "' adicionada no arq.txt";
-        document.getElementById("palavra").value = "";
-      } else {
-        let erro = await put.json();
-        resDiv.innerText = "Erro: " + JSON.stringify(erro);
-      }
-    } catch(e) {
-      resDiv.innerText = "Erro: " + e;
-    }
-  }
-</script>
+  <div class="cartao">
+    <h1 id="a1">Olá, CSS!</h1>
+    <p>Este cartão usa variáveis CSS, espaçamento e efeito de hover.</p>
+    <a href="#" class="botao">Saiba mais</a>
+  </div>
+    <script src="script.js"></script>
 </body>
 </html>
