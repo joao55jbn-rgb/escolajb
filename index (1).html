@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>ProfºJB</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <div id="teLog">
+       <div class="container" style="align-items: center; margin-left: 250px; margin-top: 400px;">
+    <img src="im1.png" alt="nome"
+     width="auto" 
+     height="500px"></div>
+  <form id="formLogin">
+      <input id="userLogin" class="number" type="number" placeholder="Usuário:">
+      <input class="login" type="number" placeholder="Senha:">
+      <button class="login" id="btn-proxima" type="button">ENTRAR</button>
+  </form>
+  </div>
+  <div id="teLmenu">
+    <div style="font-size: 50px;">JOÃO BATISTA NEVES FILHO</div>
+    
+  </div>
+  
+  
+  
+  
+  
+  
+ <script src="script.js"></script>
+</body>
+</html>
+<script>
+/* function atvResp(result) {
+    // Divide o texto pelo "@" sem risco de travar o navegador
+    const partes = result.split('@');
+    
+    document.getElementById('textoResultado1').innerText = partes[1] || "";
+    document.getElementById('textoResultado2').innerText = partes[2] || "";
+    document.getElementById('textoResultado3').innerText = partes[3] || "";
+    document.getElementById('textoResultado4').innerText = partes[4] || "";
+    document.getElementById('textoResultado5').innerText = partes[5] || "";
+     R    n
+    +76 +158
+} */
+      
+function descriptografarComSenha() {
+    // Suas variáveis exatamente como você definiu
+    const textGrand = "115,210,208,194,159,202,152,207,167,195,153,197,165,197,160,180,125,218,193,162,184,197,162,172,148,160,170,152,154,226,195,221,106,159,203,133,130,220,197,222,104,171,158,268,161,225,193,169,115,171";
+    const senR8 = "3khR@sRi";
+    //const senR9 = "4c3Bisu5";
+    // 158,268,161,225,193,169,115,171
+
+    // Usa direto o valor das variáveis (sem getElementById)
+    const entrada = textGrand.trim();
+    const senhaDigitada = senR8;
+    const senhaCorreta = senR8;
+
+    if (!entrada) {
+        //document.getElementById('textoResultado').innerText = "Por favor, cole os números enviados pelo aluno.";
+        return;
+    }
+
+    if (senhaDigitada !== senhaCorreta) {
+        //document.getElementById('textoResultado').innerText = "❌ Senha incorreta! Acesso negado às respostas.";
+        //document.getElementById('textoResultado').style.color = "red";
+        return;
+    }
+
+    //document.getElementById('textoResultado').style.color = "#333";
+    
+    const listaDecimais = entrada.split(',');
+    let textoOriginal = "";
+
+    // Executa a operação inversa usando a sua senha (senR8)
+    for (let i = 0; i < listaDecimais.length; i++) {
+        const numeroCrip = parseInt(listaDecimais[i].trim(), 10);
+        
+        if (!isNaN(numeroCrip)) {
+            const caractereSenha = senhaCorreta.charCodeAt(i % senhaCorreta.length);
+            const numeroOriginal = numeroCrip - caractereSenha; 
+            
+            textoOriginal += String.fromCharCode(numeroOriginal);
+        }
+    }
+
+    //document.getElementById('textoResultado').innerText = textoOriginal;
+    atvResp(textoOriginal);
+}
+</script>
