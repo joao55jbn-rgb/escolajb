@@ -41,3 +41,4 @@ Nota: 8; João; 1A; 2B; 3C; 4G; 5E
 Nota: 10; João; 1A; 2B; 3C; 4D; 5E
 Nota: 0; João; 1m; 2m; 3m; 4m; 5m
 Nota: 2; João; 1C; 2D; 3C; 4B; 5B
+Nota: 0; João; 1m; 2m; 3m; 4m; 5m
