@@ -24,3 +24,4 @@ Nota: 0; 1m; 2m; 3m; 4m; 5m
 Nota: 0; 1m; 2m; 3m; 4m; 5m
 Nota: 0; João; 1m; 2m; 3m; 4m; 5m
 Nota: 8; João; 1A; 2m; 3C; 4D; 5E
+Nota: 0; João; 1m; 2m; 3m; 4m; 5m
