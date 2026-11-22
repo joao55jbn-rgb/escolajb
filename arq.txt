@@ -24,3 +24,4 @@ Uva
 Pera
 Uva32
 Abacate
+MagA11
