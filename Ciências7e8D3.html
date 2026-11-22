@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <title>COSTAeSILVA@JB</title>
+</head>
+<body>
+  
+  <div id="cabeImpres" style="display: none;">
+    <di>
+      <h1 style="font-size: 20px; color: #515151; font-family: arial; margin: 0px; padding: 2px; border-bottom: 1px solid black; width: 600px;">ESCOLA MUNICIPAL COSTA E SILVA</h1>
+      <h1 style="font-size: 15px; color: black; font-family: arial; margin-left: 0px; margin-right: 0px; margin-bottom: 0px; margin-top: 10px; padding-left: 4px;">Professor: <span style="margin-right: 30px; font-weight: normal;">João Batista</span>Disciplina: <span style="margin-right: 30px; font-weight: normal;">Ciências</span>Data: <span style="margin-right: 30px; font-weight: normal;">
+        26/11/2026</span></h1>
+      <h1 style="font-size: 15px;  color: black; font-family: arial; margin: 0px; padding-left: 4px;">Turma: <span style="margin-right: 99px; font-weight: normal;">Única</span>Série: <span style="margin-right: 35px; font-weight: normal;">7º e 8º anos</span>Turno: <span style="margin-right: 30px; font-weight: normal;">Vespertino</span></h1>      
+    </di>
+    <div>
+      <img id="im1" style="width: auto; height: 70px; margin-left: 15px;" src="https://i.postimg.cc/cC9jqkwV/emcs-JB.png" alt="emcs-JB">
+      
+    </div>
+  </div>
+  <h1 id="cabeImpres2" style="font-size: 15px; font-family: arial; margin-bottom: 0px; padding-top: 15px; padding-left: 250px; color: black; display: none;"><span style="margin-right: 99px; font-weight: normal;">Atividade avaliativa em grupo</span></h1>
+   
+  
+
+  <div id="cab3" style="background: #D3D3D3; padding-top: 30px; margin-bottom: 60px;">
+  <div style="display: flex; margin-left: 15px;">
+    <img id="im1" style="width: auto; height: 300px; margin-left: 15px;" src="https://i.postimg.cc/cC9jqkwV/emcs-JB.png" alt="emcs-JB">
+    <h1 style="padding-top: 60px; margin-left: 20px; text-align: center; font-size: 80px;">Escola Municipal<br>Costa e Silva</h1>
+  </div>
+ <br>
+<textarea class="textarea1" id="nome" placeholder="Turma / série:" style="height: 120px; margin-bottom: 5px;"></textarea>
+    <div style="display: flex;">
+      <h1 style="text-align: left; font-size: 55px; margin-left: 30px;">Ciências</h1>
+      <h1 style="text-align: right; font-size: 45px; margin-left: 430px; padding-top: 5px;">Profº João Batista</h1>
+    </div>  
+  </div>
+      <h1 id="cab3a" style="text-align: center; padding: 10px; background: white; width: 70%; border-radius: 50px; margin-left: 160px; margin-top: 10px; font-size: 50px;">Atividade avaliativa em grupo<br><span style="background: #00807A; border: 1px solid #00807A; border-radius: 20px; padding: 5px; color: white; padding-bottom: 0px; ">
+        Até 26/11/2026</span></h1><br><br>
+  
+
+  <b id="q1">Questão 1</b>
+  <div class="linha"></div>
+  <p style="margin-top: 0px;">
+    Qual é o nome do cientista inglês que apresentou as leis do movimento e em qual obra elas foram publicadas?    
+  </p>
+  <textarea placeholder="Resposta:"></textarea>
+  
+  <b id="q2">Questão 2</b>
+  <div class="linha"></div>
+  <p style="margin-top: 0px;">
+    De acordo com o texto, em quais duas situações as leis de Newton não se aplicam?    
+  </p>
+  <textarea placeholder="Resposta:"></textarea>
+
+  <b id="q3">Questão 3</b>
+  <div class="linha"></div>
+  <p style="margin-top: 0px;">
+    Na fórmula da Segunda Lei de Newton F=M×A, o que significa cada uma das letras F, M e A?
+  </p>
+  <textarea placeholder="Resposta:"></textarea>
+
+  
+  <p style="margin-top: 1x;">Componentes do grupo:</p>
+  <textarea id="texaNome" placeholder="Nomes:"></textarea>
+  
+
+  <button id="bt1" onclick="imprime()">Salvar PDF</button>
+</body>
+</html>
+<script>
+function displayNone() {
+  const body = document.body;
+  
+  //const mDiv1 = document.getElementById("div1");
+  //const mDiv2 = document.getElementById("a42");
+  
+  const mensagem = "Acabou o prazo!"
+  const cod = 2375;
+  const dataAtual = new Date();
+  const dia = dataAtual.getDate();
+  const mes = dataAtual.getMonth('pt-BR', { month: 'long' });
+  const ano = dataAtual.getFullYear();
+  const diaDaSemana = dataAtual.toLocaleString('pt-BR', { weekday: 'long' });
+  const dataFormatada = `${((dia+(30*(mes+1))+ano)-cod)}`;
+  
+  //document.getElementById('cab3a').innerHTML = dataFormatada;
+  
+         
+  if(dataFormatada > 7){
+    body.style.display = 'none';
+  }  
+}
+displayNone();
+
+function imprime(){
+  // paragrafos
+  const paragrafos = document.querySelectorAll('p');
+  paragrafos.forEach((paragrafo) => {
+    paragrafo.style.fontSize = '15px'; // Defina aqui o tamanho desejado (ex: 20px, 1.2rem, etc.)
+    paragrafo.style.color = 'black';
+  });
+  
+  // textareas
+  const textareas = document.querySelectorAll('textarea');
+  textareas.forEach((textarea1) => {
+    textarea1.style.fontSize = '15px'; // Defina aqui o tamanho desejado (ex: 20px, 1.2rem, etc.)
+    textarea1.style.height = '100px';
+    textarea1.style.marginBottom = '20px';
+  });
+  //tela.style.margin = '0px';
+  //tela.style.display = 'none';
+  cab3.style.display = 'none';
+  q1.style.display = 'none';
+  q2.style.display = 'none';
+  q3.style.display = 'none';
+  
+  cab3a.style.display = 'none';
+  bt1.style.display = 'none';
+  cabeImpres.style.display = 'block';
+  cabeImpres2.style.display = 'block';
+  cabeImpres.style.display = 'flex';
+  texaNome.style.height = '80px';
+  
+//documents.button.style.display: "none";
+window.print();
+}
+
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+if (isMobile) { //celular
+  
+}// fim de celular
+
+else { //computador
+    document.body.style.display = 'none';
+} // fim de computador
+
+</script>
+<style>
+h1{
+  color: #00807A;
+  margin: 0px;
+  padding: 0px;
+  font-size: 55px;
+  font-family: arial;
+  
+}
+
+.tt1{
+  width: 94%;
+  padding: 30px;
+  background: #D3D3D3;
+  font-family: arial;
+  font-size: 50px;
+}
+
+p{
+  color: #00807A;
+  font-size: 45px;
+  font-family: arial;
+  text-align: justify;
+  /* text-indent: 40px; */
+  padding-left: 1%;
+  padding-right: 1%;
+  margin-bottom: 0px;
+  line-height: 1.4;
+}
+textarea{
+  font-size: 45px;
+  font-family: arial;
+  /* text-align: justify; */
+  /* text-indent: 40px; */
+  /* background: #D3D3D3; */
+  width: 95%;
+  height: 600px;
+  border: 1px solid black;
+  color: #384393;
+  padding: 1%;
+  margin-left: 1%;
+  margin-right: 1%;
+  margin-bottom: 150px;
+}
+button{
+  width: 100%;
+  font-size: 55px;
+  font-family: arial;
+  padding: 30px;
+  margin-top: 100px;
+  margin-bottom: 150px;
+}
+b{
+  background: white;
+  color: #00807A;
+  padding-left: 2%;
+  width: 100%;
+  height: 100px;
+  font-size: 55px;
+  font-family: arial;
+  
+}
+.linha{
+  width: 100%;
+  height: 8px;
+  background: #00807A;
+  padding: 0px;
+  margin: 0px"
+}
+
+</style>
