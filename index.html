@@ -39,16 +39,16 @@
 </div>
 
 <script>
-  const SENHA_CERTA = "melancia123";
+    const SENHA_CERTA = "melancia123";
   const USUARIO = "joao55jbn-rgb";
   const REPO = "escolajb";
   const ARQUIVO = "arq.txt";
 
   async function adicionar() {
-    let senha = document.getElementById("senha").value;
-    let token = document.getElementById("token").value.trim();
-    let palavra = document.getElementById("palavra").value.trim();
-    let resDiv = document.getElementById("resultado");
+    const senha = document.getElementById("senha").value;
+    const token = document.getElementById("token").value.trim();
+    const palavra = document.getElementById("palavra").value.trim();
+    const resDiv = document.getElementById("resultado");
     resDiv.style.display = "block";
 
     if (senha !== SENHA_CERTA) { alert("Senha errada!"); return; }
@@ -57,44 +57,61 @@
 
     resDiv.innerText = "Salvando...";
 
+    const headers = {
+      "Authorization": `Bearer ${token}`,
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json"
+    };
+
     try {
-      // 1. Pega o arquivo atual para descobrir o SHA
-      let get = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${ARQUIVO}`, {
-        headers: { "Authorization": "Bearer " + token }
+      // 1. Pega o arquivo atual ignorando o cache do navegador
+      const get = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${ARQUIVO}`, {
+        headers: headers,
+        cache: "no-store"
       });
-      let dados = await get.json();
+      
+      const dados = await get.json();
       let conteudoAtual = "";
-      let sha = dados.sha;
+      let sha = undefined;
+
       if (get.ok) {
-        // Decodifica base64
+        sha = dados.sha;
         conteudoAtual = decodeURIComponent(escape(atob(dados.content.replace(/\n/g, ""))));
+      } else if (get.status !== 404) {
+        // Se deu erro diferente de "arquivo não existe" (ex: token inválido)
+        resDiv.innerText = `Erro ao ler arquivo (${get.status}): ${dados.message}`;
+        return;
       }
 
-      if (conteudoAtual.length > 0 && !conteudoAtual.endsWith("\n")) conteudoAtual += "\n";
-      let novoConteudo = conteudoAtual + palavra;
+      if (conteudoAtual.length > 0 && !conteudoAtual.endsWith("\n")) {
+        conteudoAtual += "\n";
+      }
+      const novoConteudo = conteudoAtual + palavra;
 
       // 2. Salva de volta no GitHub
-      let put = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${ARQUIVO}`, {
+      const put = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${ARQUIVO}`, {
         method: "PUT",
-        headers: { "Authorization": "Bearer " + token, "Content-Type": "application/json" },
+        headers: headers,
         body: JSON.stringify({
-          message: "Adicionou: " + palavra,
+          message: `Adicionou: ${palavra}`,
           content: btoa(unescape(encodeURIComponent(novoConteudo))),
           sha: sha
         })
       });
 
+      const respostaPut = await put.json();
+
       if (put.ok) {
-        resDiv.innerText = "✅ Salvo com sucesso!\n\nPalavra '" + palavra + "' adicionada no arq.txt";
+        resDiv.innerText = `✅ Salvo com sucesso!\n\nPalavra '${palavra}' adicionada no arq.txt`;
         document.getElementById("palavra").value = "";
       } else {
-        let erro = await put.json();
-        resDiv.innerText = "Erro: " + JSON.stringify(erro);
+        resDiv.innerText = `❌ Erro ao salvar (${put.status}): ${respostaPut.message}`;
       }
-    } catch(e) {
-      resDiv.innerText = "Erro: " + e;
+    } catch (e) {
+      resDiv.innerText = `Erro de conexão: ${e.message}`;
     }
   }
+
 </script>
 </body>
 </html>
