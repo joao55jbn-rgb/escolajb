@@ -32,3 +32,4 @@ Nota: 0; João; 1m; 2m; 3E; 4F; 5m
 Nota: 0; João; 1m; 2m; 3m; 4m; 5m
 Nota: 0; João; 1D; 2m; 3m; 4G; 5m
 Nota: 0; João; 1m; 2m; 3m; 4m; 5m
+Nota: 0; João; 1m; 2D; 3m; 4F; 5m
