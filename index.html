@@ -1,58 +1,105 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>ProfºJB</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escola JB - Adicionar Palavra</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+  body { min-height: 100vh; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; justify-content: center; padding: 20px 15px; }
+  .card { background: white; width: 100%; max-width: 420px; border-radius: 24px; padding: 28px 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); margin-top: 20px; text-align: center; }
+  .emoji { font-size: 55px; }
+  h1 { font-size: 22px; color: #333; }
+  p.sub { color: #888; font-size: 14px; margin-bottom: 20px; }
+  label { display: block; text-align: left; font-weight: 700; font-size: 14px; color: #555; margin-bottom: 8px; margin-top: 12px; }
+  input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 14px; font-size: 16px; outline: none; }
+  input:focus { border-color: #667eea; }
+  .btn-add { width: 100%; padding: 16px; border: none; border-radius: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 15px; }
+  #resultado { margin-top: 20px; background: #f8f9ff; border: 1px dashed #c7d2fe; border-radius: 14px; padding: 15px; text-align: left; font-size: 14px; white-space: pre-wrap; display: none; }
+</style>
 </head>
 <body>
+<div class="card">
   
-  <div id="teLog">
-       <div class="container" style="align-items: center; margin-left: 250px; margin-top: 400px;">
-    <img src="im1.png" alt="nome"
-     width="auto" 
-     height="500px"></div>
-  <form id="formLogin">
-      <input id="userLogin" class="login" type="number" placeholder="Usuário:">
-      <input id="sen33" class="login" type="number" placeholder="Senha:">
-      <button class="login" id="btn-proxima" onclick="ent()" type="button">ENTRAR</button>
-  </form>
-  </div>
-  <div id="sit2"></div>
-  
-  
-  
-  
-  
-  
- <script src="script.js"></script>
+  <h1>Adicionar Palavra</h1>
+  <p class="sub">Salva direto no GitHub</p>
+<a href="Matemática7ºano101126.html">Ir para a página Sobre</a>
+    
+  <label>🔒 Senha:</label>
+  <input type="password" id="senha" placeholder="melancia123">
+
+  <label>🔑 Token do GitHub (não fica salvo):</label>
+  <input type="password" id="ttoken" placeholder="Cole o github_pat_... aqui">
+
+  <label>✏️ Digite uma palavra:</label>
+  <input type="text" id="palavra" placeholder="Ex: melancia">
+
+  <button class="btn-add" onclick="adicionar()">✨ Salvar no arq.txt</button>
+  <div id="resultado"></div>
+</div>
+
+<script>
+function tk1(){
+    const tk2 = "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";
+    return tk2;
+}
+  const SENHA_CERTA = "melancia123";
+  const USUARIO = "joao55jbn-rgb";
+  const REPO = "escolajb";
+  const ARQUIVO = "arq.txt";
+
+  async function adicionar() {
+    let senha = document.getElementById("senha").value;
+    //let token = document.getElementById("token").value.trim();
+    let token = tk1();
+    let palavra = document.getElementById("palavra").value.trim();
+    let resDiv = document.getElementById("resultado");
+    resDiv.style.display = "block";
+
+    if (senha !== SENHA_CERTA) { alert("Senha errada!"); return; }
+    if (!token) { alert("Cole o token do GitHub!"); return; }
+    if (!palavra) { alert("Digite uma palavra!"); return; }
+
+    resDiv.innerText = "Salvando...";
+
+    try {
+      // 1. Pega o arquivo atual para descobrir o SHA
+      let get = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${ARQUIVO}`, {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      let dados = await get.json();
+      let conteudoAtual = "";
+      let sha = dados.sha;
+      if (get.ok) {
+        // Decodifica base64
+        conteudoAtual = decodeURIComponent(escape(atob(dados.content.replace(/\n/g, ""))));
+      }
+
+      if (conteudoAtual.length > 0 && !conteudoAtual.endsWith("\n")) conteudoAtual += "\n";
+      let novoConteudo = conteudoAtual + palavra;
+
+      // 2. Salva de volta no GitHub
+      let put = await fetch(`https://api.github.com/repos/${USUARIO}/${REPO}/contents/${ARQUIVO}`, {
+        method: "PUT",
+        headers: { "Authorization": "Bearer " + token, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: "Adicionou: " + palavra,
+          content: btoa(unescape(encodeURIComponent(novoConteudo))),
+          sha: sha
+        })
+      });
+
+      if (put.ok) {
+        resDiv.innerText = "✅ Salvo com sucesso!\n\nPalavra '" + palavra + "' adicionada no arq.txt";
+        document.getElementById("palavra").value = "";
+      } else {
+        let erro = await put.json();
+        resDiv.innerText = "Erro: " + JSON.stringify(erro);
+      }
+    } catch(e) {
+      resDiv.innerText = "Erro: " + e;
+    }
+  }
+</script>
 </body>
 </html>
-<script>
-function ent(){
-  
-
-const nn = document.getElementById("sen33").value;
-
-const ch = document.getElementById("userLogin").value;
-
-
-const resultado = "77373-44055-87245-100819-86011-106989-113159-102053-88479-42821-131669-146477-137839-136605-79841-77373-131669-146477-137839-136605-79841-77373-131669-127967-123031-126733-79841-77373-145243-146477-152647-136605-127967-79841-124265-140307-126733-152647-42821-155115-42821-129201-140307-139073-146477-58863-129201-123031-137839-132903-136605-152647-74905-42821-145243-123031-139073-145243-58863-145243-127967-144009-132903-129201-76139-42821-124265-123031-125499-135371-130435-144009-140307-147711-139073-126733-74905-42821-46523-129201-62565-129201-62565-129201-62565-76139-42821-141541-123031-126733-126733-132903-139073-130435-74905-42821-65033-62565-141541-151413-76139-42821-157583-131669-63799-42821-155115-42821-125499-140307-136605-140307-144009-74905-42821-46523-62565-62565-69969-69969-125499-125499-76139-42821-157583-77373-61331-145243-146477-152647-136605-127967-79841-77373-61331-131669-127967-123031-126733-79841-77373-124265-140307-126733-152647-79841-77373-131669-63799-79841-98351-127967-147711-42821-105755-132903-146477-127967-42821-87245-132903-139073-282217-137839-132903-125499-140307-77373-61331-131669-63799-79841-77373-141541-79841-88479-145243-146477-127967-42821-92181-106989-98351-97117-42821-127967-145243-146477-280983-42821-144009-140307-126733-123031-139073-126733-140307-42821-126733-127967-139073-146477-144009-140307-42821-126733-127967-42821-147711-137839-42821-132903-129201-144009-123031-137839-127967-60097-77373-61331-141541-79841-77373-61331-124265-140307-126733-152647-79841-77373-61331-131669-146477-137839-136605-79841";
-
-const saidaC = resultado; 
-
-function descriptografar(textoCriptografado, chave = nn) {
-  return textoCriptografado
-    .split('-') // Separa os números pelo hífen
-    .map(numero => String.fromCharCode(Number(numero -ch) / chave)) // Divide e converte de volta para texto
-    .join('');
-}
-
-const saidaD = descriptografar(resultado); // Saída: "equipe1"
-  teLog.style.display = 'none';
-document.getElementById('sit2').innerHTML = saidaD;
-
-//document.getElementById('sit3').innerHTML = saidaCH;
-
-}
-</script>
