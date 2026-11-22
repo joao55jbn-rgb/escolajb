@@ -48,3 +48,4 @@ Nota: 0; João; 1m; 2m; 3m; 4m; 5m
 Nota: 0; João; 1m; 2m; 3m; 4m; 5m
 Nota: 0; João; 1m; 2m; 3m; 4m; 5m
 Nota: 0; ; 1m; 2m; 3m; 4m; 5m
+Nota: 0; [object HTMLInputElement]; 1m; 2m; 3m; 4m; 5m
