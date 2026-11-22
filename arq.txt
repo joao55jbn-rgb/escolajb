@@ -16,3 +16,4 @@ Ameixa
 Juçara
 Maçã
 Uva
+Amora
