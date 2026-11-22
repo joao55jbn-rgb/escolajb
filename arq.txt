@@ -26,3 +26,4 @@ Uva32
 Abacate
 MagA11
 Pera
+Amendoa
