@@ -5,21 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enviar Palavra - Acesso Restrito</title>
   <style>
-    body { font-family: sans-serif; display: flex; justify-content: center; margin-top: 50px; background: #f0f2f5; }
+    body { font-family: sans-serif; display: flex; justify-content: center; margin-top: 40px; background: #f0f2f5; }
     .caixa { background: white; padding: 25px; border-radius: 8px; width: 320px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     h2 { margin-top: 0; text-align: center; color: #333; }
     input, button { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; border-radius: 4px; }
     input { border: 1px solid #ccc; }
     button { background: #0066ff; color: white; border: none; font-size: 16px; cursor: pointer; }
-    button:hover { background: #0052cc; }
     .btn-sair { background: #dc3545; margin-top: 20px; }
-    .btn-sair:hover { background: #b02a37; }
-    .msg { font-size: 14px; text-align: center; margin-top: 10px; }
+    .msg { font-size: 13px; text-align: center; margin-top: 10px; word-break: break-word; }
   </style>
 </head>
 <body>
 
-  <!-- TELA 1: APENAS LOGIN -->
+  <!-- TELA 1: LOGIN -->
   <div id="tela-login" class="caixa">
     <h2>Login Restrito</h2>
     <input type="email" id="email" placeholder="E-mail cadastrado">
@@ -28,7 +26,7 @@
     <p id="msg-erro" class="msg" style="color: red;"></p>
   </div>
 
-  <!-- TELA 2: ÁREA LOGADA PARA ENVIAR A PALAVRA -->
+  <!-- TELA 2: ÁREA LOGADA -->
   <div id="tela-logado" class="caixa" style="display: none;">
     <h2>Enviar Palavra</h2>
     <p style="font-size: 14px; color: #555;">Logado como: <strong id="user-email"></strong></p>
@@ -47,10 +45,9 @@
     import { getFirestore, collection, addDoc } 
       from "https://gstatic.com";
 
-    // SUAS CHAVES DO PROJETO BANCO1-1E33C JÁ INSERIDAS
     const firebaseConfig = {
       apiKey: "AIzaSyBG56QSXGiSmQa__JVk-lY8ZUtKIB7IuBE",
-      authDomain: "banco1-1e33c.firebaseapp.com",
+      authDomain: "://firebaseapp.com",
       projectId: "banco1-1e33c",
       storageBucket: "banco1-1e33c.firebasestorage.app",
       messagingSenderId: "680346350396",
@@ -61,7 +58,6 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // CONTROLE DE ACESSO
     onAuthStateChanged(auth, (user) => {
       if (user) {
         document.getElementById('tela-login').style.display = 'none';
@@ -73,21 +69,22 @@
       }
     });
 
-    // FAZER LOGIN
+    // FAZER LOGIN (Mostrando o código real do erro)
     document.getElementById('btn-entrar').onclick = async () => {
-      const email = document.getElementById('email').value;
+      const email = document.getElementById('email').value.trim();
       const senha = document.getElementById('senha').value;
       const msgErro = document.getElementById('msg-erro');
-      msgErro.textContent = "";
+      msgErro.textContent = "Conectando...";
 
       try {
         await signInWithEmailAndPassword(auth, email, senha);
+        msgErro.textContent = "";
       } catch (error) {
-        msgErro.textContent = "E-mail ou senha inválidos.";
+        msgErro.textContent = "Falha: " + error.code;
       }
     };
 
-    // ENVIAR A PALAVRA PARA O BANCO DE DADOS
+    // ENVIAR PALAVRA (Mostrando o código real do erro)
     document.getElementById('btn-enviar').onclick = async () => {
       const inputPalavra = document.getElementById('campo-palavra');
       const palavra = inputPalavra.value.trim();
@@ -98,6 +95,9 @@
         msgStatus.textContent = "Digite uma palavra antes de enviar.";
         return;
       }
+
+      msgStatus.style.color = "blue";
+      msgStatus.textContent = "Enviando...";
 
       try {
         await addDoc(collection(db, "palavras"), {
@@ -110,13 +110,11 @@
         msgStatus.textContent = "Palavra salva com sucesso!";
         inputPalavra.value = "";
       } catch (error) {
-        console.error(error);
         msgStatus.style.color = "red";
-        msgStatus.textContent = "Erro ao salvar. Verifique as regras do Firestore.";
+        msgStatus.textContent = "Erro no banco: " + error.code;
       }
     };
 
-    // SAIR
     document.getElementById('btn-sair').onclick = () => signOut(auth);
   </script>
 </body>
