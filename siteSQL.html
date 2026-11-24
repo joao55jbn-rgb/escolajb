@@ -3,181 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Sistema Firebase</title>
+  <title>Enviar Palavra - Acesso Restrito</title>
   <style>
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-    .card { background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 420px; }
-    h2 { margin-top: 0; color: #1a1a1a; text-align: center; }
-    input, textarea { width: 100%; padding: 10px; margin: 8px 0 16px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
-    button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-bottom: 10px; transition: 0.2s; }
-    .btn-primary { background: #1a73e8; color: #fff; }
-    .btn-primary:hover { background: #1557b0; }
-    .btn-secondary { background: #e8f0fe; color: #1a73e8; }
-    .btn-danger { background: #dc3545; color: #fff; margin-top: 10px; }
-    .hidden { display: none; }
-    .status { font-size: 13px; text-align: center; margin-top: 10px; color: #d93025; }
-    .lista-dados { margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; max-height: 200px; overflow-y: auto; }
-    .item { background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 14px; border-left: 4px solid #1a73e8; }
-    .item small { color: #666; display: block; font-size: 11px; }
+    body { font-family: sans-serif; display: flex; justify-content: center; margin-top: 50px; background: #f0f2f5; }
+    .caixa { background: white; padding: 25px; border-radius: 8px; width: 320px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h2 { margin-top: 0; text-align: center; color: #333; }
+    input, button { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; border-radius: 4px; }
+    input { border: 1px solid #ccc; }
+    button { background: #0066ff; color: white; border: none; font-size: 16px; cursor: pointer; }
+    button:hover { background: #0052cc; }
+    .btn-sair { background: #dc3545; margin-top: 20px; }
+    .btn-sair:hover { background: #b02a37; }
+    .msg { font-size: 14px; text-align: center; margin-top: 10px; }
   </style>
 </head>
 <body>
 
-  <!-- TELA DE LOGIN / CADASTRO -->
-  <div id="auth-section" class="card">
-    <h2>Acesso ao Sistema</h2>
-    <input type="email" id="email" placeholder="Seu e-mail" required>
-    <input type="password" id="senha" placeholder="Sua senha (mín. 6 caracteres)" required>
-    <button id="btn-login" class="btn-primary">Entrar</button>
-    <button id="btn-cadastro" class="btn-secondary">Criar nova conta</button>
-    <p id="auth-msg" class="status"></p>
+  <!-- TELA 1: APENAS LOGIN -->
+  <div id="tela-login" class="caixa">
+    <h2>Login Restrito</h2>
+    <input type="email" id="email" placeholder="E-mail cadastrado">
+    <input type="password" id="senha" placeholder="Senha">
+    <button id="btn-entrar">Entrar</button>
+    <p id="msg-erro" class="msg" style="color: red;"></p>
   </div>
 
-  <!-- TELA DO SISTEMA (APÓS LOGIN) -->
-  <div id="app-section" class="card hidden">
-    <h2>Painel de Dados</h2>
-    <p style="font-size: 13px; color: #555; text-align: center;">Logado como: <strong id="user-email"></strong></p>
+  <!-- TELA 2: ÁREA LOGADA PARA ENVIAR A PALAVRA -->
+  <div id="tela-logado" class="caixa" style="display: none;">
+    <h2>Enviar Palavra</h2>
+    <p style="font-size: 14px; color: #555;">Logado como: <strong id="user-email"></strong></p>
     
-    <input type="text" id="titulo" placeholder="Título do registro" required>
-    <textarea id="descricao" rows="3" placeholder="Escreva uma anotação ou dado..."></textarea>
-    <button id="btn-salvar" class="btn-primary">Salvar no Banco</button>
-    <p id="app-msg" class="status" style="color: green;"></p>
+    <input type="text" id="campo-palavra" placeholder="Digite uma palavra aqui...">
+    <button id="btn-enviar" style="background: #28a745;">Salvar no Banco</button>
+    <p id="msg-status" class="msg"></p>
 
-    <div class="lista-dados" id="lista-registros">
-      <p style="text-align: center; color: #888; font-size: 13px;">Carregando seus dados...</p>
-    </div>
-
-    <button id="btn-sair" class="btn-danger">Sair da Conta</button>
+    <button id="btn-sair" class="btn-sair">Sair</button>
   </div>
 
-  <!-- SCRIPTS DO FIREBASE -->
   <script type="module">
     import { initializeApp } from "https://gstatic.com";
-    import { 
-      getAuth, 
-      createUserWithEmailAndPassword, 
-      signInWithEmailAndPassword, 
-      onAuthStateChanged, 
-      signOut 
-    } from "https://gstatic.com";
-    import { 
-      getFirestore, 
-      collection, 
-      addDoc, 
-      query, 
-      where, 
-      onSnapshot, 
-      serverTimestamp 
-    } from "https://gstatic.com";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } 
+      from "https://gstatic.com";
+    import { getFirestore, collection, addDoc } 
+      from "https://gstatic.com";
 
-    // COLE SUAS CREDENCIAIS DO FIREBASE AQUI:
+    // SUAS CHAVES DO PROJETO BANCO1-1E33C JÁ INSERIDAS
     const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "SEU_://firebaseapp.com",
-      projectId: "SEU_PROJECT_ID",
-      storageBucket: "SEU_://appspot.com",
-      messagingSenderId: "SEU_SENDER_ID",
-      appId: "SEU_APP_ID"
+      apiKey: "AIzaSyBG56QSXGiSmQa__JVk-lY8ZUtKIB7IuBE",
+      authDomain: "banco1-1e33c.firebaseapp.com",
+      projectId: "banco1-1e33c",
+      storageBucket: "banco1-1e33c.firebasestorage.app",
+      messagingSenderId: "680346350396",
+      appId: "1:680346350396:web:a276be7266aec99c8aa439"
     };
 
-    // Inicializa Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Elementos da Interface
-    const authSection = document.getElementById('auth-section');
-    const appSection = document.getElementById('app-section');
-    const authMsg = document.getElementById('auth-msg');
-    const appMsg = document.getElementById('app-msg');
-    const listaRegistros = document.getElementById('lista-registros');
-
-    // 1. Criar Conta
-    document.getElementById('btn-cadastro').addEventListener('click', async () => {
-      const email = document.getElementById('email').value;
-      const senha = document.getElementById('senha').value;
-      authMsg.textContent = "Criando conta...";
-      try {
-        await createUserWithEmailAndPassword(auth, email, senha);
-        authMsg.textContent = "";
-      } catch (error) {
-        authMsg.textContent = "Erro: " + error.message;
-      }
-    });
-
-    // 2. Fazer Login
-    document.getElementById('btn-login').addEventListener('click', async () => {
-      const email = document.getElementById('email').value;
-      const senha = document.getElementById('senha').value;
-      authMsg.textContent = "Entrando...";
-      try {
-        await signInWithEmailAndPassword(auth, email, senha);
-        authMsg.textContent = "";
-      } catch (error) {
-        authMsg.textContent = "Erro ao entrar: Verifique e-mail e senha.";
-      }
-    });
-
-    // 3. Sair
-    document.getElementById('btn-sair').addEventListener('click', () => signOut(auth));
-
-    // 4. Monitorar Estado de Autenticação
+    // CONTROLE DE ACESSO
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        authSection.classList.add('hidden');
-        appSection.classList.remove('hidden');
+        document.getElementById('tela-login').style.display = 'none';
+        document.getElementById('tela-logado').style.display = 'block';
         document.getElementById('user-email').textContent = user.email;
-        carregarDadosDoUsuario(user.uid);
       } else {
-        authSection.classList.remove('hidden');
-        appSection.classList.add('hidden');
+        document.getElementById('tela-login').style.display = 'block';
+        document.getElementById('tela-logado').style.display = 'none';
       }
     });
 
-    // 5. Salvar Dados no Firestore
-    document.getElementById('btn-salvar').addEventListener('click', async () => {
-      const user = auth.currentUser;
-      const titulo = document.getElementById('titulo').value.trim();
-      const descricao = document.getElementById('descricao').value.trim();
-
-      if (!titulo) return alert("Digite um título!");
+    // FAZER LOGIN
+    document.getElementById('btn-entrar').onclick = async () => {
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+      const msgErro = document.getElementById('msg-erro');
+      msgErro.textContent = "";
 
       try {
-        await addDoc(collection(db, "registros"), {
-          uid: user.uid,
-          email: user.email,
-          titulo: titulo,
-          descricao: descricao,
-          criadoEm: serverTimestamp()
-        });
-        document.getElementById('titulo').value = "";
-        document.getElementById('descricao').value = "";
-        appMsg.textContent = "Salvo com sucesso!";
-        setTimeout(() => appMsg.textContent = "", 3000);
+        await signInWithEmailAndPassword(auth, email, senha);
       } catch (error) {
-        alert("Erro ao salvar: " + error.message);
+        msgErro.textContent = "E-mail ou senha inválidos.";
       }
-    });
+    };
 
-    // 6. Ler Dados em Tempo Real (apenas do usuário logado)
-    function carregarDadosDoUsuario(uid) {
-      const q = query(collection(db, "registros"), where("uid", "==", uid));
-      onSnapshot(q, (snapshot) => {
-        listaRegistros.innerHTML = "";
-        if (snapshot.empty) {
-          listaRegistros.innerHTML = '<p style="text-align:center; color:#888; font-size:13px;">Nenhum dado salvo ainda.</p>';
-          return;
-        }
-        snapshot.forEach((doc) => {
-          const item = doc.data();
-          const div = document.createElement('div');
-          div.className = 'item';
-          div.innerHTML = `<strong>${item.titulo}</strong><p style="margin:4px 0;">${item.descricao}</p>`;
-          listaRegistros.appendChild(div);
+    // ENVIAR A PALAVRA PARA O BANCO DE DADOS
+    document.getElementById('btn-enviar').onclick = async () => {
+      const inputPalavra = document.getElementById('campo-palavra');
+      const palavra = inputPalavra.value.trim();
+      const msgStatus = document.getElementById('msg-status');
+
+      if (!palavra) {
+        msgStatus.style.color = "red";
+        msgStatus.textContent = "Digite uma palavra antes de enviar.";
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "palavras"), {
+          texto: palavra,
+          enviadoPor: auth.currentUser.email,
+          data: new Date().toISOString()
         });
-      });
-    }
+
+        msgStatus.style.color = "green";
+        msgStatus.textContent = "Palavra salva com sucesso!";
+        inputPalavra.value = "";
+      } catch (error) {
+        console.error(error);
+        msgStatus.style.color = "red";
+        msgStatus.textContent = "Erro ao salvar. Verifique as regras do Firestore.";
+      }
+    };
+
+    // SAIR
+    document.getElementById('btn-sair').onclick = () => signOut(auth);
   </script>
 </body>
 </html>
