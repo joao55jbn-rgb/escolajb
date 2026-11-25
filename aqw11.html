@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enviar Palavra - Só Cadastrados</title>
+<style>
+  body{font-family:sans-serif;display:flex;justify-content:center;margin-top:40px;background:#f0f2f5}
+  .caixa{background:white;padding:25px;border-radius:10px;width:320px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+  h2{text-align:center;margin-top:0}
+  input,button{width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:6px}
+  input{border:1px solid #ccc}
+  button{background:#0066ff;color:white;border:none;font-size:16px;cursor:pointer}
+  .btn-enviar{background:#28a745}
+  .btn-sair{background:#dc3545;margin-top:20px}
+  .alerta{font-size:13px;text-align:center;margin-top:10px;padding:8px;border-radius:4px;word-break:break-word}
+</style>
+  <!-- PWA - Virar Aplicativo -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0066ff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Banco">
+<link rel="apple-touch-icon" href="icon-512.png">
+<link rel="icon" type="image/png" href="icon-512.png">
+</head>
+<body>
+
+<div id="tela-login" class="caixa">
+  <h2>Login Restrito</h2>
+  <p style="font-size:13px;text-align:center;color:#666">Somente usuários cadastrados</p>
+  <input type="email" id="email" placeholder="E-mail cadastrado">
+  <input type="password" id="senha" placeholder="Senha">
+  <button id="btn-entrar">Entrar</button>
+  <div id="msg-erro" class="alerta" style="display:none;background:#ffe6e6;color:#b00020"></div>
+</div>
+
+<div id="tela-logado" class="caixa" style="display:none">
+  <h2>Enviar Palavra</h2>
+  <p style="font-size:14px">Logado como: <strong id="user-email"></strong></p>
+  <h2>Atividade avaliativa</h2>
+  <input type="text" id="campo-palavra" placeholder="Digite uma palavra...">
+  <button id="btn-enviar" class="btn-enviar">Salvar no Banco</button>
+  <div id="msg-status" class="alerta" style="display:none"></div>
+  <button id="btn-sair" class="btn-sair">Sair</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBG56QSXGiSmQa__JVk-lY8ZUtKIB7IuBE",
+  authDomain: "banco1-1e33c.firebaseapp.com",
+  projectId: "banco1-1e33c",
+  storageBucket: "banco1-1e33c.firebasestorage.app",
+  messagingSenderId: "680346350396",
+  appId: "1:680346350396:web:a276be7266aec99c8aa439"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById('tela-login').style.display = 'none';
+    document.getElementById('tela-logado').style.display = 'block';
+    document.getElementById('user-email').textContent = user.email;
+  } else {
+    document.getElementById('tela-login').style.display = 'block';
+    document.getElementById('tela-logado').style.display = 'none';
+  }
+});
+
+document.getElementById('btn-entrar').onclick = async () => {
+  const email = document.getElementById('email').value.trim();
+  const senha = document.getElementById('senha').value;
+  const msgErro = document.getElementById('msg-erro');
+  msgErro.style.display = 'block';
+  if (!email || !senha) { msgErro.textContent = "Preencha e-mail e senha!"; return; }
+  if (!email.includes("@")) { msgErro.textContent = "E-mail inválido!"; return; }
+  if (senha.length < 6) { msgErro.textContent = "Senha mínima 6 caracteres."; return; }
+  msgErro.textContent = "Validando usuário cadastrado...";
+  try {
+    await signInWithEmailAndPassword(auth, email, senha);
+    msgErro.style.display = 'none';
+  } catch (e) {
+    msgErro.textContent = "ACESSO NEGADO: Usuário não cadastrado ou senha incorreta!";
+  }
+};
+
+document.getElementById('btn-enviar').onclick = async () => {
+  const input = document.getElementById('campo-palavra');
+  const palavra = input.value.trim();
+  const msg = document.getElementById('msg-status');
+  msg.style.display = 'block';
+
+  // TRAVA PRINCIPAL: SÓ CADASTRADO ENVIA
+  const usuario = auth.currentUser;
+  if (!usuario) {
+    msg.style.background = "#ffe6e6"; msg.style.color = "#b00020";
+    msg.textContent = "ACESSO NEGADO: Só usuário cadastrado pode enviar!";
+    document.getElementById('tela-logado').style.display = 'none';
+    document.getElementById('tela-login').style.display = 'block';
+    return;
+  }
+  if (!palavra) { msg.style.background = "#ffe6e6"; msg.style.color = "#b00020"; msg.textContent = "Digite uma palavra!"; return; }
+
+  msg.style.background = "#e6f0ff"; msg.style.color = "#004085";
+  msg.textContent = "Usuário cadastrado confirmado! Salvando...";
+  try {
+    await addDoc(collection(db, "meus_dados"), {
+      nome: palavra,
+      valor: palavra,
+      data: serverTimestamp(),
+      enviadoPor: usuario.email,
+      uid: usuario.uid
+    });
+    msg.style.background = "#e6ffed"; msg.style.color = "#155724";
+    msg.textContent = "SUCESSO! Salvo por " + usuario.email;
+    input.value = "";
+  } catch (e) {
+    msg.style.background = "#ffe6e6"; msg.style.color = "#b00020";
+    if (e.code === 'permission-denied') msg.textContent = "BLOQUEADO PELO BANCO: Só cadastrados podem enviar!";
+    else msg.textContent = "ERRO: " + e.code + " - " + e.message;
+  }
+};
+
+document.getElementById('btn-sair').onclick = () => signOut(auth);
+</script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</body>
+</html>
