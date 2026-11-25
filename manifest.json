@@ -4,8 +4,8 @@
   "description": "Envio de notas e chat da escola",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0066ff",
-  "theme_color": "#0066ff",
+  "background_color": "white",
+  "theme_color": "white",
   "orientation": "portrait",
   "icons": [
     {
