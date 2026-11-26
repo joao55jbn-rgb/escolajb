@@ -189,10 +189,6 @@ async function enviar() {
 document.getElementById('btn-enviar').onclick = enviar;
 document.getElementById('campo-msg').addEventListener('keydown', e => { if(e.key === 'Enter') enviar(); });
 </script>
-    <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-    </script>
+
 </body>
 </html>
