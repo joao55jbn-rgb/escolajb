@@ -3,53 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Enviar Palavra - Só Cadastrados</title>
+<title>Chat Privado da Turma</title>
 <style>
-  body{font-family:sans-serif;display:flex;justify-content:center;margin-top:40px;background:#f0f2f5}
-  .caixa{background:white;padding:25px;border-radius:10px;width:320px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
-  h2{text-align:center;margin-top:0}
-  input,button{width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:6px}
-  input{border:1px solid #ccc}
-  button{background:#0066ff;color:white;border:none;font-size:16px;cursor:pointer}
-  .btn-enviar{background:#28a745}
-  .btn-sair{background:#dc3545;margin-top:20px}
-  .alerta{font-size:13px;text-align:center;margin-top:10px;padding:8px;border-radius:4px;word-break:break-word}
+  body { font-family: sans-serif; margin: 0; background: #f0f2f5; display: flex; justify-content: center; }
+  .caixa { background: white; width: 100%; max-width: 420px; height: 100vh; display: flex; flex-direction: column; }
+  .topo { background: #0066ff; color: white; padding: 15px; text-align: center; }
+  input, button { padding: 12px; border-radius: 6px; }
+  input { border: 1px solid #ccc; width: 100%; box-sizing: border-box; }
+  button { background: #0066ff; color: white; border: none; cursor: pointer; }
+  /* LISTA */
+  .usuario { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
+  .usuario b { font-size: 14px; display: block; word-break: break-all; }
+  .usuario small { color: #888; }
+  .btn-conversar { background: #28a745; padding: 8px 12px; font-size: 13px; white-space: nowrap; }
+  /* CHAT */
+  #chat { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; background: #e5ddd5; }
+  .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; background: white; font-size: 14px; }
+  .msg.minha { background: #dcf8c6; align-self: flex-end; }
+  .msg span { font-size: 10px; color: #888; display: block; text-align: right; }
+  .enviar { display: flex; padding: 10px; gap: 8px; background: white; }
+  .enviar input { flex: 1; border-radius: 20px; }
+  .enviar button { border-radius: 50%; font-size: 20px; padding: 0 16px; }
 </style>
-  <!-- PWA - Virar Aplicativo -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="white">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Banco">
-<link rel="apple-touch-icon" href="icon-512.png">
-<link rel="icon" type="image/png" href="icon-512.png">
 </head>
 <body>
 
-<div id="tela-login" class="caixa">
-  <h2>Login Restrito</h2>
-  <p style="font-size:13px;text-align:center;color:#666">Somente usuários cadastrados</p>
-  <input type="email" id="email" placeholder="E-mail cadastrado">
-  <input type="password" id="senha" placeholder="Senha">
-  <button id="btn-entrar">Entrar</button>
-  <div id="msg-erro" class="alerta" style="display:none;background:#ffe6e6;color:#b00020"></div>
+<!-- 1. LOGIN -->
+<div id="tela-login" class="caixa" style="height:auto; margin-top:40px; padding:25px; box-sizing:border-box;">
+  <h2 style="text-align:center">Entrar no Chat</h2>
+  <input type="email" id="email" placeholder="Seu e-mail"><br><br>
+  <input type="password" id="senha" placeholder="Sua senha"><br><br>
+  <button id="btn-entrar" style="width:100%">Entrar</button>
+  <p id="msg-erro" style="color:red; font-size:13px; text-align:center"></p>
 </div>
 
-<div id="tela-logado" class="caixa" style="display:none">
-  <h2>Enviar Palavra</h2>
-  <p style="font-size:14px">Logado como: <strong id="user-email"></strong></p>
-  <h2>Atividade avaliativa</h2>
-  <input type="text" id="campo-palavra" placeholder="Digite uma palavra...">
-  <button id="btn-enviar" class="btn-enviar">Salvar no Banco</button>
-  <div id="msg-status" class="alerta" style="display:none"></div>
-  <button id="btn-sair" class="btn-sair">Sair</button>
+<!-- 2. LISTA DE PESSOAS -->
+<div id="tela-lista" class="caixa" style="display:none;">
+  <div class="topo">
+    <b>Conversas 💬</b><br>
+    <small id="meu-email"></small> | <span id="btn-sair" style="cursor:pointer; text-decoration:underline">Sair</span>
+  </div>
+  <p style="padding:0 15px; color:#555; font-size:14px;">Escolha uma pessoa para conversar:</p>
+  <div id="lista-usuarios"></div>
+</div>
+
+<!-- 3. CHAT PRIVADO -->
+<div id="tela-chat" class="caixa" style="display:none;">
+  <div class="topo" style="display:flex; justify-content:space-between; align-items:center;">
+    <span id="btn-voltar" style="cursor:pointer;">← Voltar</span>
+    <b id="nome-conversa" style="font-size:14px;">Conversando...</b>
+    <span></span>
+  </div>
+  <div id="chat"></div>
+  <div class="enviar">
+    <input type="text" id="campo-msg" placeholder="Digite...">
+    <button id="btn-enviar">➤</button>
+  </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBG56QSXGiSmQa__JVk-lY8ZUtKIB7IuBE",
@@ -63,78 +78,58 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    document.getElementById('tela-login').style.display = 'none';
-    document.getElementById('tela-logado').style.display = 'block';
-    document.getElementById('user-email').textContent = user.email;
-  } else {
-    document.getElementById('tela-login').style.display = 'block';
-    document.getElementById('tela-logado').style.display = 'none';
-  }
+document.getElementById('btn-entrar').addEventListener('click', () => {
+  alert("Botão clicou! Se apareceu isso, o código tá rodando.");
 });
+  
+let idConversaAtual = null;
+let pararOuvir = null; // pra parar de ouvir a conversa antiga
 
+// LOGIN
 document.getElementById('btn-entrar').onclick = async () => {
   const email = document.getElementById('email').value.trim();
   const senha = document.getElementById('senha').value;
-  const msgErro = document.getElementById('msg-erro');
-  msgErro.style.display = 'block';
-  if (!email || !senha) { msgErro.textContent = "Preencha e-mail e senha!"; return; }
-  if (!email.includes("@")) { msgErro.textContent = "E-mail inválido!"; return; }
-  if (senha.length < 6) { msgErro.textContent = "Senha mínima 6 caracteres."; return; }
-  msgErro.textContent = "Validando usuário cadastrado...";
-  try {
-    await signInWithEmailAndPassword(auth, email, senha);
-    msgErro.style.display = 'none';
-  } catch (e) {
-    msgErro.textContent = "ACESSO NEGADO: Usuário não cadastrado ou senha incorreta!";
-  }
+  try { await signInWithEmailAndPassword(auth, email, senha); }
+  catch(e){ document.getElementById('msg-erro').textContent = "Erro: " + e.code; }
 };
-
-document.getElementById('btn-enviar').onclick = async () => {
-  const input = document.getElementById('campo-palavra');
-  const palavra = input.value.trim();
-  const msg = document.getElementById('msg-status');
-  msg.style.display = 'block';
-
-  // TRAVA PRINCIPAL: SÓ CADASTRADO ENVIA
-  const usuario = auth.currentUser;
-  if (!usuario) {
-    msg.style.background = "#ffe6e6"; msg.style.color = "#b00020";
-    msg.textContent = "ACESSO NEGADO: Só usuário cadastrado pode enviar!";
-    document.getElementById('tela-logado').style.display = 'none';
-    document.getElementById('tela-login').style.display = 'block';
-    return;
-  }
-  if (!palavra) { msg.style.background = "#ffe6e6"; msg.style.color = "#b00020"; msg.textContent = "Digite uma palavra!"; return; }
-
-  msg.style.background = "#e6f0ff"; msg.style.color = "#004085";
-  msg.textContent = "Usuário cadastrado confirmado! Salvando...";
-  try {
-    await addDoc(collection(db, "meus_dados"), {
-      nome: palavra,
-      valor: palavra,
-      data: serverTimestamp(),
-      enviadoPor: usuario.email,
-      uid: usuario.uid
-    });
-    msg.style.background = "#e6ffed"; msg.style.color = "#155724";
-    msg.textContent = "SUCESSO! Salvo por " + usuario.email;
-    input.value = "";
-  } catch (e) {
-    msg.style.background = "#ffe6e6"; msg.style.color = "#b00020";
-    if (e.code === 'permission-denied') msg.textContent = "BLOQUEADO PELO BANCO: Só cadastrados podem enviar!";
-    else msg.textContent = "ERRO: " + e.code + " - " + e.message;
-  }
-};
-
 document.getElementById('btn-sair').onclick = () => signOut(auth);
-</script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
+
+// QUANDO LOGAR
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    document.getElementById('tela-login').style.display = 'none';
+    document.getElementById('tela-lista').style.display = 'flex';
+    document.getElementById('tela-chat').style.display = 'none';
+    document.getElementById('meu-email').textContent = user.email;
+
+    // 1. SALVA O USUÁRIO NA LISTA (pra aparecer pros outros)
+    await setDoc(doc(db, "usuarios", user.uid), {
+      email: user.email,
+      uid: user.uid
+    });
+
+    // 2. CARREGA A LISTA
+    carregarUsuarios();
+  } else {
+    document.getElementById('tela-login').style.display = 'block';
+    document.getElementById('tela-lista').style.display = 'none';
+    document.getElementById('tela-chat').style.display = 'none';
   }
-</script>
-</body>
-</html>
+});
+
+// MOSTRA A LISTA COM BOTÃO CONVERSAR
+async function carregarUsuarios() {
+  const snap = await getDocs(collection(db, "usuarios"));
+  const lista = document.getElementById('lista-usuarios');
+  lista.innerHTML = "";
+  snap.forEach(d => {
+    const u = d.data();
+    if (u.uid === auth.currentUser.uid) return; // não mostra ele mesmo
+
+    const div = document.createElement('div');
+    div.className = 'usuario';
+    div.innerHTML = `<div><b>${u.email}</b><small>Online</small></div>`;
+    const btn = document.createElement('button');
+    btn.className = 'btn-conversar';
+    btn.textContent = 'Conversar';
+    btn
