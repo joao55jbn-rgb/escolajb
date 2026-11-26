@@ -78,10 +78,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-document.getElementById('btn-entrar').addEventListener('click', () => {
-  alert("Botão clicou! Se apareceu isso, o código tá rodando.");
-});
-  
+
 let idConversaAtual = null;
 let pararOuvir = null; // pra parar de ouvir a conversa antiga
 
@@ -132,4 +129,65 @@ async function carregarUsuarios() {
     const btn = document.createElement('button');
     btn.className = 'btn-conversar';
     btn.textContent = 'Conversar';
-    btn
+    btn.onclick = () => abrirConversa(u.uid, u.email);
+    div.appendChild(btn);
+    lista.appendChild(div);
+  });
+  if (lista.innerHTML === "") lista.innerHTML = "<p style='padding:15px'>Nenhum outro aluno logou ainda. Peça pra outro aluno entrar.</p>";
+}
+
+// ABRE A CONVERSA PRIVADA
+function abrirConversa(outroUid, outroEmail) {
+  document.getElementById('tela-lista').style.display = 'none';
+  document.getElementById('tela-chat').style.display = 'flex';
+  document.getElementById('nome-conversa').textContent = outroEmail;
+
+  // Cria o código da salinha - sempre igual pros 2
+  let ids = [auth.currentUser.uid, outroUid].sort();
+  idConversaAtual = ids[0] + "_" + ids[1];
+
+  // Para de ouvir a conversa antiga
+  if (pararOuvir) pararOuvir();
+
+  const q = query(collection(db, "conversas", idConversaAtual, "mensagens"), orderBy("data", "asc"));
+  const chatDiv = document.getElementById('chat');
+  pararOuvir = onSnapshot(q, (snap) => {
+    chatDiv.innerHTML = "";
+    snap.forEach(doc => {
+      const d = doc.data();
+      const div = document.createElement('div');
+      div.className = 'msg' + (d.enviadoPor === auth.currentUser.email ? ' minha' : '');
+      const hora = d.data ? d.data.toDate().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) : '';
+      div.innerHTML = `${d.texto}<span>${hora}</span>`;
+      chatDiv.appendChild(div);
+    });
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+  });
+}
+
+// VOLTAR PRA LISTA
+document.getElementById('btn-voltar').onclick = () => {
+  document.getElementById('tela-chat').style.display = 'none';
+  document.getElementById('tela-lista').style.display = 'flex';
+  if (pararOuvir) pararOuvir();
+  carregarUsuarios(); // atualiza a lista
+};
+
+// ENVIAR
+async function enviar() {
+  const input = document.getElementById('campo-msg');
+  const texto = input.value.trim();
+  if (!texto || !idConversaAtual) return;
+  input.value = "";
+  await addDoc(collection(db, "conversas", idConversaAtual, "mensagens"), {
+    texto: texto,
+    enviadoPor: auth.currentUser.email,
+    enviadoPorUid: auth.currentUser.uid,
+    data: serverTimestamp()
+  });
+}
+document.getElementById('btn-enviar').onclick = enviar;
+document.getElementById('campo-msg').addEventListener('keydown', e => { if(e.key === 'Enter') enviar(); });
+</script>
+</body>
+</html>
