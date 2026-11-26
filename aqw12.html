@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enviar Palavra - Só Cadastrados</title>
+<style>
+  body{font-family:sans-serif;display:flex;justify-content:center;margin-top:40px;background:#f0f2f5}
+  .caixa{background:white;padding:25px;border-radius:10px;width:320px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+  h2{text-align:center;margin-top:0}
+  input,button{width:100%;padding:12px;margin:8px 0;box-sizing:border-box;border-radius:6px}
+  input{border:1px solid #ccc}
+  button{background:#0066ff;color:white;border:none;font-size:16px;cursor:pointer}
+  .btn-enviar{background:#28a745}
+  .btn-sair{background:#dc3545;margin-top:20px}
+  .alerta{font-size:13px;text-align:center;margin-top:10px;padding:8px;border-radius:4px;word-break:break-word}
+
+  /* --- GABARITO - CSS ISOLADO, SÓ VALE DENTRO DELE --- */
+  .gabarito-container{
+    --bg:#f4f6f9; --card:#ffffff; --text:#1e293b; --muted:#64748b; --border:#cbd5e1; --accent:#2563eb; --accent-text:#ffffff;
+    max-width:100%; margin:16px 0; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; box-sizing:border-box; color:var(--text); font-family:Arial, Helvetica, sans-serif;
+  }
+  .gabarito-container *{box-sizing:border-box; margin:0; padding:0;}
+  .gabarito-container .header{border-bottom:2px solid var(--border); padding-bottom:16px; margin-bottom:20px;}
+  .gabarito-container .header h1{font-size:1.4rem; margin-bottom:12px; text-align:left;}
+  .gabarito-container .campos{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .gabarito-container .campo label{display:block; font-size:0.85rem; color:var(--muted); margin-bottom:4px;}
+  .gabarito-container .campo input{width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:6px; font-size:0.95rem; margin:0;}
+  .gabarito-container .questao{display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px dashed var(--border);}
+  .gabarito-container .questao:last-of-type{border-bottom:none;}
+  .gabarito-container .numero{font-weight:bold; min-width:80px; font-size:0.85rem;}
+  .gabarito-container .alternativas{display:flex; gap:6px;}
+  .gabarito-container .alternativas input[type="radio"]{display:none;}
+  .gabarito-container .alternativas label{width:34px; height:34px; border:1.5px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; user-select:none; transition:0.15s ease; font-size:0.85rem; margin:0; padding:0;}
+  .gabarito-container .alternativas input[type="radio"]:checked + label{background-color:var(--accent); border-color:var(--accent); color:var(--accent-text);}
+  .gabarito-container .acoes{margin-top:20px; display:flex; gap:10px; justify-content:flex-end;}
+  .gabarito-container .acoes button{padding:10px 12px; border-radius:6px; border:1px solid var(--border); background:#ffffff; color:var(--text); font-weight:bold; cursor:pointer; width:auto; font-size:0.85rem; margin:0;}
+  .gabarito-container .acoes button.primario{background:var(--accent); border-color:var(--accent); color:var(--accent-text);}
+  @media (max-width:400px){
+    .gabarito-container .campos{grid-template-columns:1fr;}
+    .gabarito-container .numero{min-width:70px;}
+    .gabarito-container .alternativas{gap:4px;}
+    .gabarito-container .alternativas label{width:30px; height:30px;}
+  }
+  @media print {
+    .gabarito-container{border:none; max-width:100%; padding:0;}
+    .gabarito-container .acoes{display:none;}
+  }
+</style>
+  <!-- PWA - Virar Aplicativo -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0066ff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Banco">
+<link rel="apple-touch-icon" href="icon-512.png">
+<link rel="icon" type="image/png" href="icon-512.png">
+</head>
+<body>
+
+<div id="tela-login" class="caixa">
+  <h2>Login Restrito</h2>
+  <p style="font-size:13px;text-align:center;color:#666">Somente usuários cadastrados</p>
+  <input type="email" id="email" placeholder="E-mail cadastrado">
+  <input type="password" id="senha" placeholder="Senha">
+  <button id="btn-entrar">Entrar</button>
+  <div id="msg-erro" class="alerta" style="display:none;background:#ffe6e6;color:#b00020"></div>
+</div>
+
+<div id="tela-logado" class="caixa" style="display:none">
+  <h2>Enviar Palavra</h2>
+  <p style="font-size:14px">Logado como: <strong id="user-email"></strong></p>
+  <h2 id="tel123">Atividade avaliativa</h2>
+
+  <!-- INÍCIO DO PRIMEIRO CÓDIGO - GABARITO -->
+  <div class="gabarito-container">
+    <div class="header">
+      <h1>Folha de Gabarito</h1>
+      <div class="campos">
+        <div class="campo">
+          <label for="nome">Nome do aluno</label>
+          <input id="nome" type="text" placeholder="Digite o nome" />
+        </div>
+        <div class="campo">
+          <label for="data">Data / Turma</label>
+          <input id="data" type="text" placeholder="Ex.: 25/11/2026 - Turma A" />
+        </div>
+      </div>
+    </div>
+
+    <form id="form-gabarito">
+      <div class="questao">
+        <span class="numero">Questão 01</span>
+        <div class="alternativas">
+          <input type="radio" name="q1" id="q1a" value="A"><label for="q1a">A</label>
+          <input type="radio" name="q1" id="q1b" value="B"><label for="q1b">B</label>
+          <input type="radio" name="q1" id="q1c" value="C"><label for="q1c">C</label>
+          <input type="radio" name="q1" id="q1d" value="D"><label for="q1d">D</label>
+          <input type="radio" name="q1" id="q1e" value="E"><label for="q1e">E</label>
+        </div>
+      </div>
+
+      <div class="questao">
+        <span class="numero">Questão 02</span>
+        <div class="alternativas">
+          <input type="radio" name="q2" id="q2a" value="A"><label for="q2a">A</label>
+          <input type="radio" name="q2" id="q2b" value="B"><label for="q2b">B</label>
+          <input type="radio" name="q2" id="q2c" value="C"><label for="q2c">C</label>
+          <input type="radio" name="q2" id="q2d" value="D"><label for="q2d">D</label>
+          <input type="radio" name="q2" id="q2e" value="E"><label for="q2e">E</label>
+        </div>
+      </div>
+
+      <div class="questao">
+        <span class="numero">Questão 03</span>
+        <div class="alternativas">
+          <input type="radio" name="q3" id="q3a" value="A"><label for="q3a">A</label>
+          <input type="radio" name="q3" id="q3b" value="B"><label for="q3b">B</label>
+          <input type="radio" name="q3" id="q3c" value="C"><label for="q3c">C</label>
+          <input type="radio" name="q3" id="q3d" value="D"><label for="q3d">D</label>
+          <input type="radio" name="q3" id="q3e" value="E"><label for="q3e">E</label>
+        </div>
+      </div>
+
+      <div class="questao">
+        <span class="numero">Questão 04</span>
+        <div class="alternativas">
+          <input type="radio" name="q4" id="q4a" value="A"><label for="q4a">A</label>
+          <input type="radio" name="q4" id="q4b" value="B"><label for="q4b">B</label>
+          <input type="radio" name="q4" id="q4c" value="C"><label for="q4c">C</label>
+          <input type="radio" name="q4" id="q4d" value="D"><label for="q4d">D</label>
+          <input type="radio" name="q4" id="q4e" value="E"><label for="q4e">E</label>
+        </div>
+      </div>
+
+      <div class="questao">
+        <span class="numero">Questão 05</span>
+        <div class="alternativas">
+          <input type="radio" name="q5" id="q5a" value="A"><label for="q5a">A</label>
+          <input type="radio" name="q5" id="q5b" value="B"><label for="q5b">B</label>
+          <input type="radio" name="q5" id="q5c" value="C"><label for="q5c">C</label>
+          <input type="radio" name="q5" id="q5d" value="D"><label for="q5d">D</label>
+          <input type="radio" name="q5" id="q5e" value="E"><label for="q5e">E</label>
+        </div>
+      </div>
+
+      <div class="acoes">
+        <button type="reset">Limpar</button>
+        <button type="button" class="primario" onclick="window.print()">Imprimir / Salvar PDF</button>
+      </div>
+    </form>
+  </div>
+  <!-- FIM DO PRIMEIRO CÓDIGO - GABARITO -->
+  
+  <input type="text" id="campo-palavra" placeholder="Digite uma palavra...">
+  <button id="btn-enviar" class="btn-enviar">Salvar no Banco</button>
+  <div id="msg-status" class="alerta" style="display:none"></div>
+  <button id="btn-sair" class="btn-sair">Sair</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBG56QSXGiSmQa__JVk-lY8ZUtKIB7IuBE",
+  authDomain: "banco1-1e33c.firebaseapp.com",
+  projectId: "banco1-1e33c",
+  storageBucket: "banco1-1e33c.firebasestorage.app",
+  messagingSenderId: "680346350396",
+  appId: "1:680346350396:web:a276be7266aec99c8aa439"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById('tela-login').style.display = 'none';
+    document.getElementById('tela-logado').style.display = 'block';
+    document.getElementById('user-email').textContent = user.email;
+  } else {
+    document.getElementById('tela-login').style.display = 'block';
+    document.getElementById('tela-logado').style.display = 'none';
+  }
+});
+
+document.getElementById('btn-entrar').onclick = async () => {
+  const email = document.getElementById('email').value.trim();
+  const senha = document.getElementById('senha').value;
+  const msgErro = document.getElementById('msg-erro');
+  msgErro.style.display = 'block';
+  if (!email || !senha) { msgErro.textContent = "Preencha e-mail e senha!"; return; }
+  if (!email.includes("@")) { msgErro.textContent = "E-mail inválido!"; return; }
+  if (senha.length < 6) { msgErro.textContent = "Senha mínima 6 caracteres."; return; }
+  msgErro.textContent = "Validando usuário cadastrado...";
+  try {
+    await signInWithEmailAndPassword(auth, email, senha);
+    msgErro.style.display = 'none';
+  } catch (e) {
+    msgErro.textContent = "ACESSO NEGADO: Usuário não cadastrado ou senha incorreta!";
+  }
+};
+
+document.getElementById('btn-enviar').onclick = async () => {
+  const input = document.getElementById('campo-palavra');
+  const palavra = input.value.trim();
+  const msg = document.getElementById('msg-status');
+  document.getElementById('tel123').style.display = 'none';
+  msg.style.display = 'block';
+
+  // TRAVA PRINCIPAL: SÓ CADASTRADO ENVIA
+  const usuario = auth.currentUser;
+  if (!usuario) {
+    msg.style.background = "#ffe6e6"; msg.style.color = "#b00020";
+    msg.textContent = "ACESSO NEGADO: Só usuário cadastrado pode enviar!";
+    document.getElementById('tela-logado').style.display = 'none';
+    document.getElementById('tela-login').style.display = 'block';
+    return;
+  }
+  if (!palavra) { msg.style.background = "#ffe6e6"; msg.style.color = "#b00020"; msg.textContent = "Digite uma palavra!"; return; }
+
+  msg.style.background = "#e6f0ff"; msg.style.color = "#004085";
+  msg.textContent = "Usuário cadastrado confirmado! Salvando...";
+  try {
+    await addDoc(collection(db, "meus_dados"), {
+      nome: palavra,
+      valor: palavra,
+      data: serverTimestamp(),
+      enviadoPor: usuario.email,
+      uid: usuario.uid
+    });
+    msg.style.background = "#e6ffed"; msg.style.color = "#155724";
+    msg.textContent = "SUCESSO! Salvo por " + usuario.email;
+    input.value = "";
+  } catch (e) {
+    msg.style.background = "#ffe6e6"; msg.style.color = "#b00020";
+    if (e.code === 'permission-denied') msg.textContent = "BLOQUEADO PELO BANCO: Só cadastrados podem enviar!";
+    else msg.textContent = "ERRO: " + e.code + " - " + e.message;
+  }
+};
+
+document.getElementById('btn-sair').onclick = () => signOut(auth);
+</script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</body>
+</html>
