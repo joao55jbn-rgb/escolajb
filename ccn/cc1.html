@@ -229,24 +229,7 @@ if (isMobile) { //celular
 }// fim de celular
 
 else { //computador
-const escala = 0.6;
-
-// Aplica o zoom proporcional no body
-document.body.style.transform = `scale(${escala})`;
-
-// CORREÇÃO: tem que ser top left, não top center
-document.body.style.transformOrigin = "top left";
-
-// Ajusta a largura para compensar o encolhimento
-document.body.style.width = `${92 / escala}%`;
-
-// Evita a barra de rolagem horizontal que cria o espaço
-document.documentElement.style.overflowX = "hidden";
-document.body.style.overflowX = "hidden";  
-  
-  //document.body.style.display = 'none';
-  //document.body.style.padding = '0px';
-  
+  document.body.style.display = 'none';
 } // fim de computador
 
 </script>
