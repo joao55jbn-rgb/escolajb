@@ -1,87 +1,83 @@
 <!DOCTYPE html>
-
 <html>
 <head>
   <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
   <title>MenuJB</title>
 </head>
 <body>
-  <div style="padding: 50px; background: #D3D3D3; display: flex;">
-    <img id="im1" style="width: auto; height: 250px; margin-left: 15px;" src="https://i.postimg.cc/pXMqm5Lt/emcs2.png" alt="emcs-JB">
-    <div style="margin-top: 50px; margin-left: 50px; font-size: 120px;">CIÊNCIAS</div>
-    
-  </div>
-   <div style="padding: 50px; margin: 0; font-size: 50px; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2);">
+  <img id="im1" style="width: 100%; height: auto;" src="https://i.postimg.cc/90bXttzq/ccn4.jpg">
+
+  <div style="color: white; display: flex; justify-content: center; padding: 50px; font-size: 48px; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2);">
      ESCOLA MUNICIPAL COSTA E SILVA</div>
 
  
-<div class="container">
-   <a class="btn-add" href="E6.html">6ºano</a><br>
-</div>
-<div class="container">
-   <a class="btn-add" href="E7.html">7ºano</a><br>
-</div>
-<div class="container">
-   <a class="btn-add" href="E7.html">8ºano</a><br>
-</div>
+  <div class="btn23">
+    <button onclick="lnk1()" class="btn24">6ºano</button>
+  </div>
+    <div class="btn23">
+    <button onclick="lnk2()" class="btn24">7ºano</button>
+  </div>
+    <div class="btn23">
+    <button onclick="lnk3()" class="btn24">8ºano</button>
+  </div>
+  
+
+  <script>
+  function lnk1(){
+    //window.location.href = "E6.html";
+  }
+  function lnk2(){
+    //window.location.href = "E7.html";
+  }
+  function lnk3(){
+    //window.location.href = "E7.html";
+  }
+  </script>
   
   
-  
-  
+  <style>
+  .btn24{
+    background: linear-gradient(135deg, #667eea, #764ba2); 
+    font-family: arial;
+    font-size: 50px; 
+    width: 70%;
+    height: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-weight: bold;
+    color: #FFFAFA;
+        border: none; 
+    border-radius: 20px; 
+    cursor: pointer; 
+  }
+  .btn23 {
+    margin-top: 40px;
+    background: none;
+    height: 110px;
+  display: flex;
+    
+  justify-content: center;  Centraliza na horizontal */
+  /* align-items: center;     /* Centraliza na vertical */
+  /* min-height: 200px;       Garante espaço vertical para notar o efeito */
+}
+  </style>
 </body>
 </html>
 <style>
-  .btn-add { 
-    height: 100%; 
-    width: 60%; 
-    padding-top: 20px; 
-    padding-bottom: 20px; 
-    padding-left: 300px; 
-    padding-right: 300px; 
-    border: none; 
-    border-radius: 14px; 
-    background: linear-gradient(135deg, #667eea, #764ba2); 
-    color: white; 
-    font-size: 50px; 
-    font-weight: 700; 
-    cursor: pointer; 
-    margin-left: 130px;
-  }
-a {
-  text-decoration: none;
-  font-family: arial;
-}
-
-a:hover {
-  
-}
-
-.container {
-    margin-top: 100px;
-}
-.tl {
-  background: blue;
-  
-  
-}
 *{
   margin: 0;
   padding: 0;
-  font-family: arial;
-  
+  font-family: arial; 
+  background: #FFFAFA;
 }
 </style>
 <script>
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
 if (isMobile) { //celular
   
-  
 }// fim de celular
-
 else { //computador
   document.body.style.display = 'none';
 } // fim de computador
-
 </script>
 
