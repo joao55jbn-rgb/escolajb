@@ -1,1 +1,341 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <title>Matemática</title>
+</head>
+<body>
+   <img style="border: none; margin: 3%; display: none;" src="
+     https://www.moncao.ma.gov.br/wp-content/uploads/2026/07/logo.png     
+     "alt="nome"
+     width="93%" 
+     height="100%">
+  <div style="background: linear-gradient(135deg, #667eea, #764ba2);
+  padding-top: 30px; padding-bottom: 20px;
+    ">
+  <div style="display: flex; margin-left: 15px;">
+    <img id="im1" style="width: auto; height: 300px; margin-left: 15px;" src="https://i.postimg.cc/pXMqm5Lt/emcs2.png" alt="emcs-JB">
+    
+    
+    <h1 style="color: white; font-family: arial; padding-top: 70px; margin-left: 20px; text-align: center; font-size: 70px;">Escola Municipal<br>Costa e Silva</h1>
+  </div>
+ <br>
+<textarea class="textarea1" id="nome" placeholder="Nome Turma Data"></textarea>
+    <div style="display: flex;">
+      <h1 style="color: white; font-family: arial; text-align: left; font-size: 50px; margin-left: 40px;">Matemática</h1>
+      <h1 style="color: white; font-family: arial; text-align: right; font-size: 45px; margin-left: 260px; padding-top: 5px;">Profº João Batista</h1>
+    </div>    
+  </div>
+  
+    <h1 id="tela" style="text-align: center; margin: 50px">Atividade avaliativa<br><span id="prazo" style="border: 1px solid #00807A; border-radius: 20px; padding: 5px; color: white;">
+      Até 26/11/2026</span></h1><br><br>
+  
+  <b>Questão 1</b>
+  <div class="linha"></div>
+  <p>
+    Lorena comprou um aquário para criar peixinhos e colocou água até a metade do aquário.    
+  </p>
+  <div class="container" style="align-items: center; ">
+    <img style="border: none; margin: 3%" src="
+     https://uploads.tudosaladeaula.com/2025/07/volumes-de-blocos-4.png      
+     "alt="nome"
+     width="auto" 
+     height="450px"></div>
+  <p>
+    Qual a capacidade total desse aquário, em litros?    
+  </p>
+  
+  <textarea class="textarea2" id="questao1" placeholder="Resposta:"></textarea>
+  
+  <b>Questão 2</b>
+  <div class="linha"></div>
+  <p>
+    Ronaldo comprou uma caixa de isopor para colocar gelo e manter os refrigerantes gelados na festa de aniversário de sua filha. Observe, a seguir, a caixa que ele adquiriu.   
+  </p>
+    <div class="container" style="align-items: center; ">
+    <img style="border: none; margin: 3%" src="
+     https://uploads.tudosaladeaula.com/2025/07/volumes-de-blocos-5.png      
+     "alt="nome"
+     width="auto" 
+     height="450px"></div>
+  <p>
+    Qual é a capacidade total dessa caixa, em centímetros cúbicos?    
+  </p>
+  <textarea class="textarea2" id="questao2" placeholder="Resposta:"></textarea>
+  
+  <b>Questão 3</b>
+  <div class="linha"></div>
+  <p>
+    Thiago ganhou uma caixa com blocos de montar e derrubou todos de uma vez. Depois de brincar, ele guardou apenas algumas peças, como mostrado a seguir.    
+  </p>
+      <div class="container" style="align-items: center; ">
+    <img style="border: none; margin: 3%" src="
+     https://uploads.tudosaladeaula.com/2025/07/volumes-de-blocos-10.png      
+     "alt="nome"
+     width="auto" 
+     height="400px"></div>
+  <p>
+    Sabendo que cada bloquinho possui 1 cm³ de volume e que o volume total da caixa é de 36 cm³, quantos bloquinhos ainda faltam ser colocados na caixa?    
+  </p>
+  
+  <textarea class="textarea2" id="questao3" placeholder="Resposta:"></textarea>
+  <textarea style="display: none;" class="textarea2" id="questao4" placeholder="Resposta:"></textarea>
+  <textarea style="display: none;" class="textarea2" id="questao5" placeholder="Resposta:"></textarea>
+
+  
+  <p id="pp1">
+    
+  </p>
+  <h1 id="tts"></h1>
+  <div class="bot2" style="display: none;">
+      <button id="enviar" >Preparar E-mail</button>
+  </div>
+    <div style="display: none; "class="bot2">
+      <button id="nomer3" onclick="enviarWhatsapp()">Preparar WhatsApp</button>    
+  </div>  
+</body>
+</html>
+<script>
+function displayNone() {
+  const body = document.body;
+  const mensagem = "Acabou o prazo!"
+  const cod = 2383;
+  const dataAtual = new Date();
+  const dia = dataAtual.getDate();
+  const mes = dataAtual.getMonth('pt-BR', { month: 'long' });
+  const ano = dataAtual.getFullYear();
+  const diaDaSemana = dataAtual.toLocaleString('pt-BR', { weekday: 'long' });
+  const dataFormatada = `${((dia+(30*(mes+1))+ano)-cod)}`;
+  
+  const agora = new Date();
+  const horas = String(agora.getHours()).padStart(2, '0');
+  const minutos = String(agora.getMinutes()).padStart(2, '0');
+  const segundos = String(agora.getSeconds()).padStart(2, '0');
+  const horarioFormatado = `${horas}:${minutos}:${segundos}`;
+  
+  //document.getElementById('tela').innerHTML = dataFormatada;
+  
+  if(dataFormatada > 1){
+    body.style.display = 'none';
+    location.reload();
+    if(segundos < 60) location.reload();
+
+  }  
+}
+setInterval(displayNone, 1000);
+displayNone();
+
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+if (isMobile) { //celular
+  
+  // FUNÇÃO DE CRIPTOGRAFIA COM SENHA
+  function nCrip(entr){
+    const senha = "3khR@sRi";
+    let tamT = entr.length;
+    let text5 = [];
+    
+    for (let a = 0; a < tamT; a++) {
+      const caractereTexto = entr.charCodeAt(a);
+      // Pega o caractere correspondente da senha em loop ciclico
+      const caractereSenha = senha.charCodeAt(a % senha.length); 
+      
+      // Soma os dois códigos decimais para criptografar com segurança
+      const codigoCriptografado = caractereTexto + caractereSenha;
+      
+      text5.push(codigoCriptografado);
+    }      
+    return text5.join(',');
+  }
+  
+  function encrip() {
+    const qq1 = document.getElementById('questao1').value;
+    const qq2 = document.getElementById('questao2').value;
+    const qq3 = document.getElementById('questao3').value;
+    const qq4 = document.getElementById('questao4').value;
+    const qq5 = document.getElementById('questao5').value;
+    
+    const textoPuro = `@${qq1}@${qq2}@${qq3}@${qq4}@${qq5}`;
+    const corp3 = nCrip(textoPuro); 
+    return corp3;
+  }
+  
+  function enviarWhatsapp() {
+    const nome = document.getElementById('nome').value;
+    const telefone = "5598992015877"; 
+    const encrip2 = encrip();
+    const mensagem = `${encrip2}\n\n${nome}\n`;
+    const mensagemCodificada = encodeURIComponent(mensagem);
+    const url = `https://wa.me/${telefone}/?text=${mensagemCodificada}`;
+
+    window.open(url, '_blank');
+  }
+  
+  function enviarEmail() {
+    const emailPredefinido = "batistajb12@outlook.com";
+    const assunto = encodeURIComponent(document.getElementById('nome').value);
+    const emailSaida = encrip();
+    window.location.href = `mailto:${emailPredefinido}?subject=${assunto}&body=${emailSaida}`;
+  }
+
+} // fim de celular
+else { 
+    document.body.style.display = 'none';
+} 
+
+</script>
+<style>
+*{
+  margin: 0;
+  padding: 0;
+}
+h1,b{
+  font-family: arial;
+}
+.container {
+  display: flex;
+  justify-content: center; /* Alinha no sentido horizontal */
+}
+#prazo{
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+select{
+  background: white;
+  color: #00807A;
+  padding-left: 5%;
+  width: 50%;
+  height: 100px;
+  font-size: 50px;
+  margin: 20px;
+}
+img{
+  
+}
+h1{
+  color: #212121;
+  margin: 0px;
+  padding: 0px;
+  font-size: 55px;
+  
+}
+
+b{
+  background: white;
+  color: #212121;
+  padding-left: 2%;
+  width: 100%;
+  height: 100px;
+  font-size: 55px;
+  
+}
+
+body {
+  
+  min-height: 100vh; /* Ocupa no mínimo a altura da tela */
+}
+.linha{
+  width: 100%;
+  height: 8px;
+  background: #693DAE;
+  padding: 0px;
+  margin: 0px"
+
+  
+}
+input{
+  width: 25px;   /* Define a largura */
+  height: 25px;  /* Define a altura */
+  vertical-align: middle;
+}
+  
+
+.textarea1{
+  background: white;
+  color: #00807A;
+  padding: 2%;
+  width: 90%;
+  height: 70px;
+  font-size: 50px;
+  font-family: arial;
+  margin: 2%;
+  margin-top: 10px;
+  border: 3px solid #005346;
+  border-radius: 30px;
+  margin-bottom: 0px;
+  padding-top: 3%;
+  margin-left: 3%;
+}
+.textarea2{
+  background: white;
+  color: #00807A;
+  padding: 2%;
+  width: 90%;
+  height: 200px;
+  font-size: 50px;
+  font-family: arial;
+  margin: 2%;
+  margin-top: 10px;
+  border: 3px solid #005346;
+  border-radius: 30px;
+  margin-bottom: 150px;
+  margin-left: 3%;
+  
+}
+
+p{
+  color: #212121;
+  font-size: 50px;
+  font-family: arial;
+  margin: 2%;
+  margin-bottom: 0px;
+  line-height: 1.5;
+  padding: 0px;
+  
+}
+#enviar{
+  background: #00807A;
+  color: white;
+  padding-top: 40px;
+  padding-bottom: 60px;
+  
+  width: 80%;
+  font-size: 70px;
+  border-radius: 70px;
+  margin-bottom: 20px;
+  
+}
+#nomer3{
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding-top: 40px;
+  padding-bottom: 60px;
+  
+  width: 80%;
+  font-size: 70px;
+  border-radius: 70px;
+  margin-bottom: 200px;
+  
+}
+label{
+  background: #00807A;
+  font-size: 55px;
+  font-family: arial;
+  color: white;
+}
+.sel{
+  padding-left: 20px;
+  background: #00807A;
+  margin-bottom: 300px;
+}
+.bot2 {
+  background: white;
+  display: flex;
+  justify-content: center; /* Centraliza na horizontal */
+  align-items: center;     /* Centraliza na vertical (se a div tiver altura definida) */
+  height: 300px;           /* Exemplo de altura da div */
+  padding: 20px;
+  
+}
+
+</style>
 
