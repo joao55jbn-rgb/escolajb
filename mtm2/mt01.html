@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <title>DocxJB</title>
+</head>
+<body>
+  <img id="im1" style="width: 100%; height: auto; display: block; margin; 0; padding: 0;" src="https://i.postimg.cc/Dz4ZkXYK/mtm4.jpg">  
+  <div id="emcs" style="color: white; display: flex; justify-content: center; padding: 20px; font-size: 48px; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2); font-family: arial; margin: 0;">
+     ESCOLA MUNICIPAL COSTA E SILVA</div>
+
+<div id="interBody">
+    <h1 id="tela">
+    Monômios e polinômios
+  </h1>
+  <p>
+    Podemos diferenciar a matemática em duas grandes áreas, a matemática utilitária e a matemática abstrata. A primeira envolve questões diárias, os problemas, as demandas, ou seja, questões atuais que requerem soluções imediatas, enquanto a outra se refere ao pensamento abstrato, o conhecimento pensado e criado no campo da imaginação, do mundo teórico.
+  </p>
+  <p>
+    Assim, nosso intuito é trabalhar estas definições e operações, para que você possa ter agilidade em lidar com este tema.
+  </p>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt21.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt22.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt23.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt24.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt25.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt26.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt27.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt28.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt29.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt30.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt31.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt32.jpg" alt="" width="100%"height="auto"></div>
+  
+    <div class="container" style="align-items: center; ">
+    <img src="mt33.jpg" alt="" width="100%"height="auto"></div>
+  
+  
+  </div>
+</body>
+</html>
+<style>
+p{
+  font-size: 40px;
+  font-family: arial;
+  margin: 12px;
+  text-align: justify;
+  text-indent: 40px;
+}
+b{
+  font-size: 40px;
+  font-family: arial;
+  margin: 12px;
+  background: black;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 7px 2px 7px;
+        /* C    D   B   E */
+}
+h1{
+  font-family: arial;
+  font-size: 50px;
+}
+h2{
+  font-family: arial;
+  font-size: 45px;
+  margin-bottom: 1px;
+}
+h1, h2 {
+    text-align: center;
+}
+
+.container {
+  display: flex;
+  justify-content: center; /* Alinha no sentido horizontal */
+}
+#interBody{
+  padding-left: 20px;
+  padding-right: 20px;
+}
+body{
+  margin: 0;
+  padding: 0;
+}
+
+</style>
+<script>
+//im1.style.paddingBottom= "0px";
+
+function displayNone() {
+  const body = document.body;
+  //const mDiv = document.getElementById("div1");
+  //const mDiv2 = document.getElementById("a42");
+  
+  const mensagem = "Acabou o prazo!"
+  const cod = 2382;
+  const dataAtual = new Date();
+  const dia = dataAtual.getDate();
+  const mes = dataAtual.getMonth('pt-BR', { month: 'long' });
+  const ano = dataAtual.getFullYear();
+  const diaDaSemana = dataAtual.toLocaleString('pt-BR', { weekday: 'long' });
+  const dataFormatada = `${((dia+(30*(mes+1))+ano)-cod)}`;
+  
+ //document.getElementById('tela').innerHTML = dataFormatada;
+  
+         
+  if(dataFormatada > 15){
+    body.style.display = 'none';
+  }  
+}
+displayNone();
+
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+if (isMobile) { //celular
+  
+  
+}// fim de celular
+
+else { //computador
+const escala = 0.6;
+
+// Aplica o zoom proporcional no body
+document.body.style.transform = `scale(${escala})`;
+
+// CORREÇÃO: tem que ser top left, não top center
+document.body.style.transformOrigin = "top left";
+
+// Ajusta a largura para compensar o encolhimento
+document.body.style.width = `${92 / escala}%`;
+
+// Evita a barra de rolagem horizontal que cria o espaço
+document.documentElement.style.overflowX = "hidden";
+document.body.style.overflowX = "hidden";  
+  
+  //document.body.style.display = 'none';
+  //document.body.style.padding = '0px';
+  
+} // fim de computador
+
+</script>
